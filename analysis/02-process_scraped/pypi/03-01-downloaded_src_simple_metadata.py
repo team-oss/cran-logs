@@ -10,7 +10,6 @@ from tqdm import tqdm
 tqdm.pandas()
 
 
-
 def get_pkginfo(f):
     fp, ext = os.path.splitext(f)
     #print(f)
