@@ -1,8 +1,3 @@
----
-output: 
-  html_document: 
-    toc: yes
----
 
 # CRAN Logs
 
