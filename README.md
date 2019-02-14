@@ -18,22 +18,21 @@ and running them may take a long time (or may not work depending on API changes)
 
 Running order
 
-| Getting Data               	| Processing Data                           |
-|----------------------------	|-----------------------------------------	|
-| 01-get_pypi_simple.R       	|                                         	|
-| 02-get_pkg_html_simple.R   	|                                         	|
-|                            	| 01-pypi_simple_packages.R               	|
-|                            	| 02-pypi_simple_latest_src_dl_url.R      	|
-| 03-get_pkg_source_simple.R 	|                                         	|
-|                            	| 03-01-downloaded_src_simple_metadata.py 	|
-|                            	| 03-02-downloaded_src_simple_metadata.py 	|
-|                            	| 03-03-parse_production_ready.py         	|
-| 04-licenses.R              	|                                         	|
-|                            	| 04-01-parse_librariesio_licenses.R      	|
-|                            	| 04-02-osi_approved.R                    	|
-|                            	| 05-combine_before_gh.R                  	|
-|                            	|                                         	|
-|                            	|                                         	|
+| Getting Data               	| Processing Data                           |Notes                                       |
+|----------------------------	|-----------------------------------------	|--------------------------------------------|
+| 01-get_pypi_simple.R       	|                                         	||
+| 02-get_pkg_html_simple.R   	|                                         	||
+|                            	| 01-pypi_simple_packages.R               	||
+|                            	| 02-pypi_simple_latest_src_dl_url.R      	||
+| 03-get_pkg_source_simple.R 	|                                         	||
+|                            	| 03-01-downloaded_src_simple_metadata.py 	||
+|                            	| 03-02-downloaded_src_simple_metadata.py 	||
+|                            	| 03-03-parse_production_ready.py         	||
+| 04-licenses.R              	|                                         	| Using libraries.io to get license info instead of using metadata |
+|                            	| 04-01-parse_librariesio_licenses.R      	||
+|                            	| 04-02-osi_approved.R                    	||
+|                            	| 05-combine_before_gh.R                  	||
+
 
 **Getting Data**
 
@@ -84,8 +83,6 @@ Running order
   - input: 
   - input:
   - output:
-
-
 
 
 ### JavaScript (CDN)
