@@ -1,10 +1,26 @@
+---
+output: 
+  html_document: 
+    toc: yes
+---
+
+# CRAN Logs
+
+Script that downloaded the daily package download logs and daily r-base download logs from the rstudio CRAN mirror:
+`./analysis/01-scrape_package_data/cran/logs`
+
+- package: `'./data/oss2/original/cran/logs/pkg/'`
+- r-base: `'./data/oss2/original/cran/logs/r/'`
+
+
+# Lines of Code Analysis
 
 In general, the scripts under `Getting Data` are making API calls,
 and running them may take a long time (or may not work depending on API changes).
 
-## R (CRAN)
+### R (CRAN)
 
-## Python (PyPI)
+### Python (PyPI)
 
 Running order
 
@@ -78,7 +94,7 @@ Running order
 
 
 
-## JavaScript (CDN)
+### JavaScript (CDN)
 
 Running order
 
@@ -93,4 +109,4 @@ Running order
 
   - input: `'./data/oss2/original/cdn/libraries_json/'`
 
-## Julia
+### Julia
