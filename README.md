@@ -7,19 +7,6 @@ Script that downloaded the daily package download logs and daily r-base download
 - package: `'./data/oss2/original/cran/logs/pkg/'`
 - r-base: `'./data/oss2/original/cran/logs/r/'`
 
-
-# Lines of Code Analysis
-
-
-# CRAN Logs
-
-Script that downloaded the daily package download logs and daily r-base download logs from the rstudio CRAN mirror:
-`./analysis/01-scrape_package_data/cran/logs`
-
-- package: `'./data/oss2/original/cran/logs/pkg/'`
-- r-base: `'./data/oss2/original/cran/logs/r/'`
-
-
 # Lines of Code Analysis
 
 In general, the scripts under `Getting Data` are making API calls,
