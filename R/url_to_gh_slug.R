@@ -41,3 +41,4 @@ testthat::expect_equal(parse_github_slug("https://github.com/niklasvh/feedback.j
 testthat::expect_equal(parse_github_slug('git://github.juven14/Collapsible.git'), "juven14/Collapsible") # this url does not have github.com, just github
 testthat::expect_equal(parse_github_slug('https://ternarylabs.github.io/porthole/'), "ternarylabs/porthole") # project page for repo
 testthat::expect_equal(parse_github_slug('https://ternarylabs.github.io/porthole'), "ternarylabs/porthole")
+testthat::expect_equal(parse_github_slug('https://github.com/HSU-ANT/ACME.jl'), 'HSU-ANT/ACME.jl')
