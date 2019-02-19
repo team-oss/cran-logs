@@ -20,17 +20,17 @@ Running order
 
 | Getting Data               	| Processing Data                           |Notes                                       |
 |----------------------------	|-----------------------------------------	|--------------------------------------------|
-| 01-get_pypi_simple.R       	|                                         	||
-| 02-get_pkg_html_simple.R   	|                                         	||
-|                            	| 01-pypi_simple_packages.R               	||
-|                            	| 02-pypi_simple_latest_src_dl_url.R      	||
-| 03-get_pkg_source_simple.R 	|                                         	||
-|                            	| 03-01-downloaded_src_simple_metadata.py 	||
-|                            	| 03-02-downloaded_src_simple_metadata.py 	||
-|                            	| 03-03-parse_production_ready.py         	||
-| 04-licenses.R              	|                                         	| Using libraries.io to get license info instead of using metadata |
-|                            	| 04-01-parse_librariesio_licenses.R      	||
-|                            	| 04-02-osi_approved.R                    	||
+| 01-get_pypi_simple.R       	|                                         	|Use http://pypi.org/simple/ to get a list of all the packages listed on pypi.|
+| 02-get_pkg_html_simple.R   	|                                         	|From there we get the list of all the individual package pages from pypi/simple.|
+|                            	| 01-pypi_simple_packages.R               	|This list of packages is what gets counted for the total number of packages on pypi|
+|                            	| 02-pypi_simple_latest_src_dl_url.R      	|We assume that the last listed source is the latest version of the python package.|
+| 03-get_pkg_source_simple.R 	|                                         	|And we download all the "latest" package versions|
+|                            	| 03-01-downloaded_src_simple_metadata.py 	|Python packages come in different types (e.g., `.tar.gz`, `.egg`, `.whl`, etc) we use the python `pkginfo` library to introspect the package metadata.|
+|                            	| 03-02-downloaded_src_simple_metadata.py 	|We add the metadata attributes to our dataset of python packages,|
+|                            	| 03-03-parse_production_ready.py         	|and then extract the development status from the attributes.  Packages that were counted as "production ready" use the user-reported "development status" from the python package metadata that were marked as "production/stable" or "mature".|
+| 04-licenses.R              	|                                         	|While we can use the license field in the package metadata, the results are inconsistent since they are user input.  We querry libraries.io to get license info for each of out "production ready" packages instead of using the metadata from the downloaded python source package.|
+|                            	| 04-01-parse_librariesio_licenses.R      	|Extract the REST API response from libraries.io|
+|                            	| 04-02-osi_approved.R                    	|Filter the list of licenses for ones that are OSI approved.|
 |                            	| 05-combine_before_gh.R                  	||
 
 
