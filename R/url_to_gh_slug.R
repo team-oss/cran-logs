@@ -55,3 +55,51 @@ testthat::expect_equal(parse_github_slug('git://github.juven14/Collapsible.git')
 
 testthat::expect_equal(parse_github_slug('http://marcinkosinski.github.io/archivist.github/'), "marcinkosinski/archivist.github")
 testthat::expect_equal(parse_github_slug("http://dlinzer.github.com/poLCA"), "dlinzer/poLCA")
+
+#' Takes a string that contains multiple URLs, and returns a single github slug
+multiple_url_parse_gh_slug <- function(url_string, num_urls=NULL, url_delim_pattern = ',\\n|,|\\n') {
+  if (is.null(num_urls)) {
+    num_urls <- count_urls(url_string)
+  }
+  if (num_urls == 1) {
+    return(parse_github_slug(url_string))
+  } else if (num_urls > 1) {
+    # if there are more than 1 urls, count the number of urls with github in it
+    num_gh <- stringr::str_count(url_string, 'github')
+    
+    if (num_gh == 1) { ## if there is only 1 with github, just take that one
+      # break up the string into the parts
+      url_v <- stringr::str_split(url_string, url_delim_pattern)[[1]]
+      
+      # find the gh url
+      url_gh <- stringr::str_detect(url_v, 'github')
+      url_gh <- url_v[url_gh]
+      
+      # return it
+      stopifnot(length(url_gh) == 1)
+      return(parse_github_slug(url_gh))
+    } else if (num_gh > 1) { ## if there are more than 1 github urls, take the first one?
+      url_v <- stringr::str_split(url_string, url_delim_pattern)[[1]]
+      url_gh <- stringr::str_detect(url_v, 'github')
+      ## get the first match here
+      url_gh <- url_v[url_gh][[1]]
+      return(parse_github_slug(url_gh))
+    } else {
+      warning('num_gh < 1')
+      return(NA)
+    }
+  } else {
+    warning('num_urls < 1')
+    return(NA)
+  }
+}
+testthat::expect_equal(multiple_url_parse_gh_slug("https://declaredesign.org/r/fabricatr,\nhttps://github.com/DeclareDesign/fabricatr", 2), "DeclareDesign/fabricatr")
+testthat::expect_equal(multiple_url_parse_gh_slug("https://github.com/objornstad/epimdr,\nhttps://www.springer.com/gp/book/9783319974866,\nhttp://ento.psu.edu/directory/onb1"), "objornstad/epimdr")
+testthat::expect_equal(multiple_url_parse_gh_slug("https://github.com/jolars/eulerr, https://jolars.github.io/eulerr/"), "jolars/eulerr")
+testthat::expect_equal(multiple_url_parse_gh_slug("https://github.com/ropensci/cld2 (devel)\nhttps://github.com/cld2owners/cld2 (upstream)"), "ropensci/cld2")
+testthat::expect_equal(multiple_url_parse_gh_slug("http://www.bifie.at,\nhttps://www.bifie.at/bildungsforschung/forschungsdatenbibliothek,\nhttps://www.bifie.at/large-scale-assessment-mit-r-methodische-grundlagen-der-oesterreichischen-bildungsstandardueberpruefung,\nhttps://github.com/alexanderrobitzsch/BIFIEsurvey,\nhttps://sites.google.com/site/alexanderrobitzsch2/software"), "alexanderrobitzsch/BIFIEsurvey")
+testthat::expect_equal(multiple_url_parse_gh_slug("http://github.com/ajaygpb/ammistability\nhttps://CRAN.R-project.org/package=ammistability\nhttps://ajaygpb.github.io/ammistability\nhttps://doi.org/10.5281/zenodo.1344756"), "ajaygpb/ammistability")
+testthat::expect_equal(multiple_url_parse_gh_slug('https://github.com/boxuancui/DataExplorer', 1), 'boxuancui/DataExplorer')
+
+
+# testthat::expect_equal(multiple_url_parse_gh_slug(), )
