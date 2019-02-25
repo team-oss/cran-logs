@@ -32,16 +32,26 @@ parse_github_slug <- function(github_url) {
   }
 }
 
-testthat::expect_equal(parse_github_slug('github.com/bi-sdal/sdalr'), 'bi-sdal/sdalr')
+# testthat::expect_equal(parse_github_slug(), )
+# 
 testthat::expect_true(is.na(parse_github_slug('yahoo.com')))
 testthat::expect_true(is.na(parse_github_slug(NA)))
-testthat::expect_equal(parse_github_slug('https://github.com/usnationalarchives/AVI-MetaEdit/tree/master/Release'),
-                       'usnationalarchives/AVI-MetaEdit')
+
+testthat::expect_equal(parse_github_slug('github.com/bi-sdal/sdalr'), 'bi-sdal/sdalr')
+testthat::expect_equal(parse_github_slug('https://github.com/usnationalarchives/AVI-MetaEdit/tree/master/Release'), 'usnationalarchives/AVI-MetaEdit')
 testthat::expect_equal(parse_github_slug('https://github.com/usgin/ContentModelCMS'), 'usgin/ContentModelCMS')
 testthat::expect_equal(parse_github_slug('https://github.com/bi-sdal/sdalr.git'), 'bi-sdal/sdalr')
-testthat::expect_equal(parse_github_slug('git@github.com:bi-sdal/sdalr.git'), 'bi-sdal/sdalr')
 testthat::expect_equal(parse_github_slug("https://github.com/niklasvh/feedback.js"), "niklasvh/feedback.js")
-testthat::expect_equal(parse_github_slug('git://github.juven14/Collapsible.git'), "juven14/Collapsible") # this url does not have github.com, just github
+testthat::expect_equal(parse_github_slug('https://github.com/HSU-ANT/ACME.jl'), 'HSU-ANT/ACME.jl')
+testthat::expect_equal(parse_github_slug('https://github.com/google/brotli#readme (upstream)'), 'google/brotli')
+
+
 testthat::expect_equal(parse_github_slug('https://ternarylabs.github.io/porthole/'), "ternarylabs/porthole") # project page for repo
 testthat::expect_equal(parse_github_slug('https://ternarylabs.github.io/porthole'), "ternarylabs/porthole")
-testthat::expect_equal(parse_github_slug('https://github.com/HSU-ANT/ACME.jl'), 'HSU-ANT/ACME.jl')
+
+
+testthat::expect_equal(parse_github_slug('git@github.com:bi-sdal/sdalr.git'), 'bi-sdal/sdalr')
+testthat::expect_equal(parse_github_slug('git://github.juven14/Collapsible.git'), "juven14/Collapsible") # this url does not have github.com, just github
+
+testthat::expect_equal(parse_github_slug('http://marcinkosinski.github.io/archivist.github/'), "marcinkosinski/archivist.github")
+testthat::expect_equal(parse_github_slug("http://dlinzer.github.com/poLCA"), "dlinzer/poLCA")
