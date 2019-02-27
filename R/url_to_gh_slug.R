@@ -18,7 +18,7 @@ parse_github_slug <- function(github_url) {
   } else if (stringr::str_detect(github_url, 'github.io')) { # account for github pages urls for repositoryes
     # e.g., https://ternarylabs.github.io/porthole/,
     # e.g., http://ternarylabs.github.io/porthole/ ## note https vs http
-    user <- stringr::str_extract(github_url, '(?<=https://).*(?=\\.github\\.io)')
+    user <- stringr::str_extract(github_url, '(?<=https?://).*(?=\\.github\\.io)')
     repo <- stringr::str_extract(github_url, '(?<=\\.github\\.io/).*(?=/?)')
     repo <- stringr::str_remove(repo, '/')
     final_slug <- stringr::str_c(user, repo, sep = '/')
