@@ -4,6 +4,13 @@
 parse_github_slug <- function(github_url) {
   if (is.na(github_url)) {
     return(NA)
+  } else if (stringr::str_detect(github_url, 'https?://.*\\.github.com/.*')) {
+    # account for strings like http://dlinzer.github.com/poLCA (where usually it's github.io, not github.com)
+    user <- stringr::str_extract(github_url, '(?<=https?://).*(?=\\.github\\.com)')
+    repo <- stringr::str_extract(github_url, '(?<=\\.github\\.com/).*(?=/?)')
+    repo <- stringr::str_remove(repo, '/')
+    final_slug <- stringr::str_c(user, repo, sep = '/')
+    return(final_slug)
   } else if (stringr::str_detect(github_url, 'github.com')) {
     # regex for another time, let's not throw the kitchen sink when we don't have to
     #final_slug <- stringr::str_extract(github_url, '(?<=github\\.com/).*?/.*?(?=/|#|$|\\.)')
@@ -45,10 +52,8 @@ testthat::expect_equal(parse_github_slug("https://github.com/niklasvh/feedback.j
 testthat::expect_equal(parse_github_slug('https://github.com/HSU-ANT/ACME.jl'), 'HSU-ANT/ACME.jl')
 testthat::expect_equal(parse_github_slug('https://github.com/google/brotli#readme (upstream)'), 'google/brotli')
 
-
 testthat::expect_equal(parse_github_slug('https://ternarylabs.github.io/porthole/'), "ternarylabs/porthole") # project page for repo
 testthat::expect_equal(parse_github_slug('https://ternarylabs.github.io/porthole'), "ternarylabs/porthole")
-
 
 testthat::expect_equal(parse_github_slug('git@github.com:bi-sdal/sdalr.git'), 'bi-sdal/sdalr')
 testthat::expect_equal(parse_github_slug('git://github.juven14/Collapsible.git'), "juven14/Collapsible") # this url does not have github.com, just github
@@ -93,6 +98,7 @@ multiple_url_parse_gh_slug <- function(url_string, num_urls=NULL, url_delim_patt
     return(NA)
   }
 }
+
 testthat::expect_equal(multiple_url_parse_gh_slug("https://declaredesign.org/r/fabricatr,\nhttps://github.com/DeclareDesign/fabricatr", 2), "DeclareDesign/fabricatr")
 testthat::expect_equal(multiple_url_parse_gh_slug("https://github.com/objornstad/epimdr,\nhttps://www.springer.com/gp/book/9783319974866,\nhttp://ento.psu.edu/directory/onb1"), "objornstad/epimdr")
 testthat::expect_equal(multiple_url_parse_gh_slug("https://github.com/jolars/eulerr, https://jolars.github.io/eulerr/"), "jolars/eulerr")
