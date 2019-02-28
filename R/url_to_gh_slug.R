@@ -4,7 +4,15 @@
 parse_github_slug <- function(github_url) {
   if (is.na(github_url)) {
     return(NA)
-  } else if (stringr::str_detect(github_url, 'https?://.*\\.github.com/.*')) {
+  }
+  
+  # account for double slash in url after github.com, e.g., github.com//user/repo
+  github_url <- str_replace(github_url, 'github\\.com//', 'github\\.com/')
+  
+  # replace https://www.github. with https://github
+  github_url <- str_replace(github_url, 'https?://www\\.github\\.', 'https?://github\\.')
+
+  if (stringr::str_detect(github_url, 'https?://.*\\.github.com/.*')) {
     # account for strings like http://dlinzer.github.com/poLCA (where usually it's github.io, not github.com)
     user <- stringr::str_extract(github_url, '(?<=https?://).*(?=\\.github\\.com)')
     repo <- stringr::str_extract(github_url, '(?<=\\.github\\.com/).*(?=/?)')
@@ -27,7 +35,7 @@ parse_github_slug <- function(github_url) {
     # e.g., http://ternarylabs.github.io/porthole/ ## note https vs http
     user <- stringr::str_extract(github_url, '(?<=https?://).*(?=\\.github\\.io)')
     repo <- stringr::str_extract(github_url, '(?<=\\.github\\.io/).*(?=/?)')
-    repo <- stringr::str_remove(repo, '/')
+    repo <- stringr::str_remove(repo, '/.*$')
     final_slug <- stringr::str_c(user, repo, sep = '/')
     return(final_slug)
   } else if (stringr::str_detect(github_url, 'git://github')) {
@@ -60,6 +68,24 @@ testthat::expect_equal(parse_github_slug('git://github.juven14/Collapsible.git')
 
 testthat::expect_equal(parse_github_slug('http://marcinkosinski.github.io/archivist.github/'), "marcinkosinski/archivist.github")
 testthat::expect_equal(parse_github_slug("http://dlinzer.github.com/poLCA"), "dlinzer/poLCA")
+testthat::expect_equal(parse_github_slug("https://www.github.com/rorynolan/autothresholdr"), "rorynolan/autothresholdr")
+testthat::expect_equal(parse_github_slug("http://teos-10.github.io/GSW-R/index.html"), "teos-10/GSW-R")
+
+
+
+
+#' given a string of urls, counts the number of urls in the string
+count_urls <- function(url_string, url_delim_pattern = ',\\n|,|\\n') {
+  # the order of ,\\n and \n or , matter here
+  stringr::str_count(url_string, url_delim_pattern) + 1
+}
+
+testthat::expect_equal(count_urls('a,b,c'), 3)
+testthat::expect_equal(count_urls('a,\nb,\nc'), 3)
+testthat::expect_equal(count_urls('a\nb\nc'), 3)
+testthat::expect_equal(count_urls('a\nb,c'), 3)
+
+
 
 #' Takes a string that contains multiple URLs, and returns a single github slug
 multiple_url_parse_gh_slug <- function(url_string, num_urls=NULL, url_delim_pattern = ',\\n|,|\\n') {
@@ -106,6 +132,10 @@ testthat::expect_equal(multiple_url_parse_gh_slug("https://github.com/ropensci/c
 testthat::expect_equal(multiple_url_parse_gh_slug("http://www.bifie.at,\nhttps://www.bifie.at/bildungsforschung/forschungsdatenbibliothek,\nhttps://www.bifie.at/large-scale-assessment-mit-r-methodische-grundlagen-der-oesterreichischen-bildungsstandardueberpruefung,\nhttps://github.com/alexanderrobitzsch/BIFIEsurvey,\nhttps://sites.google.com/site/alexanderrobitzsch2/software"), "alexanderrobitzsch/BIFIEsurvey")
 testthat::expect_equal(multiple_url_parse_gh_slug("http://github.com/ajaygpb/ammistability\nhttps://CRAN.R-project.org/package=ammistability\nhttps://ajaygpb.github.io/ammistability\nhttps://doi.org/10.5281/zenodo.1344756"), "ajaygpb/ammistability")
 testthat::expect_equal(multiple_url_parse_gh_slug('https://github.com/boxuancui/DataExplorer', 1), 'boxuancui/DataExplorer')
+testthat::expect_equal(multiple_url_parse_gh_slug("https://github.com//mikldk/ryacas, http://www.yacas.org"), 'mikldk/ryacas')
+
+
+
 
 
 # testthat::expect_equal(multiple_url_parse_gh_slug(), )
