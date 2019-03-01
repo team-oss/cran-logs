@@ -57,6 +57,21 @@ cran_extra$note <- 'cran'
 osi_licenses <- dplyr::bind_rows(osi_licenses, cran_extra)
 
 # python -----
+
+# 
+python_extra <- tibble::tribble(
+  ~abbrev, ~py_parsed_license, 
+  "gpl", "gnu general public license v3",
+  "mpl", "mozilla public license, v. 2.0",
+  "gpl", "gnu affero general public license",
+  "bsd", "3",
+  "gpl", "gnu"
+)
+
+python_extra$note <- 'pypi'
+
+osi_licenses <- dplyr::bind_rows(osi_licenses, python_extra)
+
 # julia -----
 
 
