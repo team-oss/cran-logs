@@ -15,8 +15,6 @@ pkg_html_tbl <- function(pkg_path) {
   return(pkg_df)
 }
 
-
-
 cran_pkgs <- readr::read_csv(here::here('./data/oss2/processed/pkg_links.csv'))
 
 cran_chk <- cran_pkgs %>%
