@@ -27,10 +27,15 @@ downloaded_get_responses$downloaded_librariesio_response_path[1:5]
 len1 <- nrow(simple_df)
 len2 <- nrow(downloaded_get_responses)
 
+any(duplicated(simple_df$save_path))
+any(duplicated(downloaded_get_responses$downloaded_librariesio_response_path))
+
 simple_df <- simple_df %>%
   dplyr::full_join(downloaded_get_responses, by = c('save_path' = 'downloaded_librariesio_response_path'))
 
-stopifnot(nrow(simple_df) == len1)
+# stopifnot(nrow(simple_df) == len1)
+# after the pip downloads, this check no longer works, but there are no duplicated keys,
+# this just means that there were different packages that were downloaded (and also packages downloaded from the original libraries call from the 03- set of scripts)
 
 libraryio_responses <- simple_df %>%
   dplyr::filter(downloaded_librariesio_status == TRUE) %>%
@@ -51,7 +56,7 @@ tbl
 # only expect 0, 1, 2, 3, NA counts for number of normalized licenses
 # making this check becuase i have to create separate dataframes for each count of normalized licenses and rbind
 stopifnot(all(c("0", "1", "2", NA) %in% names(tbl)))
-stopifnot(all(names(tbl) %in% c("0", "1", "2", "3", NA)))
+stopifnot(all(names(tbl) %in% c("0", "1", "2", "3", "4",  NA)))
 
 # WHY DOESN"T THIS WORK!?
 # libraryio_responses_all <- libraryio_responses %>%
@@ -80,9 +85,12 @@ libraryio_responses3 <- libraryio_responses %>%
   dplyr::filter(librariesio_license_len == 3L) %>%
   dplyr::mutate(l = purrr::map_chr(librariesio_response, ~ httr::content(.)[['normalized_licenses']][[1]][[1]]))
 
+libraryio_responses4 <- libraryio_responses %>%
+  dplyr::filter(librariesio_license_len == 4L) %>%
+  dplyr::mutate(l = purrr::map_chr(librariesio_response, ~ httr::content(.)[['normalized_licenses']][[1]][[1]]))
 
 libraryio_responses99 <- libraryio_responses %>%
-  dplyr::filter(!librariesio_license_len %in% c(0L, 1L, 2L, 3L)) %>%
+  dplyr::filter(!librariesio_license_len %in% c(0L, 1L, 2L, 3L, 4L)) %>%
   dplyr::mutate(l = NA)
 
 # the number of rows after concatenation should be the same
@@ -91,12 +99,13 @@ stopifnot(
     nrow(libraryio_responses1) +
     nrow(libraryio_responses2) +
     nrow(libraryio_responses3) +
+    nrow(libraryio_responses4) +
     nrow(libraryio_responses99) ==
 
     nrow(libraryio_responses)
 )
 
-libraryio <- dplyr::bind_rows(libraryio_responses0, libraryio_responses1, libraryio_responses2, libraryio_responses3, libraryio_responses99)
+libraryio <- dplyr::bind_rows(libraryio_responses0, libraryio_responses1, libraryio_responses2, libraryio_responses3, libraryio_responses4, libraryio_responses99)
 
 stopifnot(nrow(libraryio) == nrow(libraryio_responses))
 

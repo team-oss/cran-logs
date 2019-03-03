@@ -35,7 +35,6 @@ test_classifier = ['Development Status :: 5 - Production/Stable',
 p_test = re.compile('^development status')
 assert parse_class_dev(test_classifier, p_test) == 'Development Status :: 5 - Production/Stable'
 
-
 def parse_dev_status(dev_string, dev_status_pattern='(?<=development status).*'):
     try:
         return re.findall(dev_status_pattern, dev_string.lower())[0].strip()
@@ -60,7 +59,7 @@ def clean_dev_status(status_string):
         return np.NaN
 
 
-df = pd.read_pickle('./data/oss2/processed/working/pypi/parsed_pkg_attributes.pickle')
+df = pd.read_pickle('./data/oss2/processed/working/pypi/parsed_pkg_attributes_noprod.pickle')
 
 print("Parsing the development status")
 
@@ -69,8 +68,9 @@ df['dev_status_str'] =  df['classifiers'].progress_apply(parse_class_dev, dev_pa
 df['dev_status'] = df['dev_status_str'].progress_apply(parse_dev_status)
 df['dev_status_clean'] = df['dev_status'].progress_apply(clean_dev_status)
 
-df.to_pickle('./data/oss2/processed/working/pypi/production_ready_first_pass.pickle')
-df.to_csv('./data/oss2/processed/working/pypi/production_ready_first_pass.csv', index=False)
+print("Saving")
+df.to_pickle('./data/oss2/processed/working/pypi/production_ready_noprod.pickle')
+df.to_csv('./data/oss2/processed/working/pypi/production_ready_noprod.csv', index=False)
 
 # dev_status counts
 cts = df['dev_status'].value_counts(dropna=False)

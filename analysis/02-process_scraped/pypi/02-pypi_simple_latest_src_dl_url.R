@@ -28,6 +28,7 @@ pkg_urls <- pypi_pkgs %>%
 
 # number of package html that were not able to be pulled from website (25)
 (num_miss <- length(pkg_urls) - length(scraped_pkgs_html))
+stopifnot(num_miss == 25)
 
 BASE_URL <- 'https://pypi.org'
 full_urls <- paste0(BASE_URL, pkg_urls)

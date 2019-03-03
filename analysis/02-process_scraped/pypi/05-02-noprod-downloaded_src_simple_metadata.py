@@ -12,16 +12,9 @@ def df_pkginfo_attr(pkg_name, pkginfo_attr_dict):
     trans['name'] = pkg_name
     return trans
 
-
 print("Loading data...", end='')
-downloaded = pd.read_pickle('./data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr.pickle')
+downloaded = pd.read_pickle('./data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr_noprod.pickle')
 print('done.')
-
-# rename the name column, becuase the attr_dict also has "name" in it
-# this this by running downloaded.columns, and pasting the list with the first "name" as "name_pypi"
-downloaded.columns = ['name_pypi', 'html_save_path', 'on_server', 'last_pkg_dl_url', 'filename',
-       'src_save_path', 'file_downloaded', 'dl_fn_ext', 'dl_fn', 'dl_ext',
-       'pkginfo', 'attributes']
 
 print("Converting attributes dictionary to dataframe...", end='')
 attr_df = list(map(df_pkginfo_attr, downloaded['name_pypi'], downloaded['attributes']))
@@ -31,6 +24,13 @@ print('done.')
 
 assert len(attr_df) == len(downloaded)
 
+print("Droping columns")
+# because we are re-using the initial pypi metadata table, we want to drop the old columns before concatenating the new columns
+# we do this because duplicate columns become a problem in the next script
+dup_cols = list(t.columns)
+downloaded.drop(dup_cols, axis='columns', inplace=True, errors='ignore')
+
+
 print("Combining metadata to downloaded table")
 
 # alignment seems to mess things up so it's just safer to do a join
@@ -39,6 +39,6 @@ d = pd.merge(downloaded, t, how='outer', left_on='name_pypi', right_on='name')
 assert d.shape[0] == downloaded.shape[0]
 
 print('saving')
-d.to_csv('./data/oss2/processed/working/pypi/parsed_pkg_attributes.csv', index=False)
-d.to_pickle('./data/oss2/processed/working/pypi/parsed_pkg_attributes.pickle')
+d.to_csv('./data/oss2/processed/working/pypi/parsed_pkg_attributes_noprod.csv', index=False)
+d.to_pickle('./data/oss2/processed/working/pypi/parsed_pkg_attributes_noprod.pickle')
 print('script done.')

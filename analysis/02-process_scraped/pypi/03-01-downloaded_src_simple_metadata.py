@@ -1,3 +1,6 @@
+"""Uses pkginfo to parse the python package (e.g., whl or .gz file)
+Also returns the attributes from the pkginfo results
+"""
 import os
 import pandas as pd
 from pathlib import Path
@@ -18,6 +21,14 @@ def get_pkginfo(f):
             return pkg.Wheel(f)
         elif ext == '.gz':
             return pkg.SDist(f)
+        elif ext == '.zip':
+            return pkg.SDist(f)
+        elif ext == '.egg':
+            return pkg.BDist(f)
+        elif ext == '.bz2':
+            return pkg.SDist(f)
+        elif ext == '.tgz':
+            return pkg.SDist(f)
     except ReadError:
         return None
     except ValueError:
@@ -36,11 +47,12 @@ print('Loading Data')
 
 downloaded_pkgs = os.listdir('./data/oss2/original/pypi/pypi_simple/simple_pkg_src/')
 download_info = pd.read_csv('./data/oss2/processed/pypi/simple_url_src_paths.csv')
+download_info = download_info[~pd.isna(download_info['name'])] ## there's a missing row in here
 
 print(download_info.head())
 
 download_info['file_downloaded'] = download_info['src_save_path'].apply(os.path.isfile)
-print(download_info['file_downloaded'].head())
+#print(download_info['file_downloaded'].head())
 
 downloaded = download_info.loc[download_info.file_downloaded == True]
 
@@ -63,6 +75,8 @@ print(downloaded.head())
 
 print('Saving working dataset')
 
-downloaded.to_csv('./data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr.csv', index=False)
-downloaded.to_feather('./data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr.feather')
+downloaded.to_csv('./data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr.csv',
+                  index=False)
 downloaded.to_pickle('./data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr.pickle')
+
+print('Done.')

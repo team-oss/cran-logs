@@ -3,7 +3,7 @@ library(xml2)
 library(scales)
 library(yaml)
 
-pypi_pkgs <- xml2::read_html('./data/oss2/original/pypi/2019-01-23-pypi_simple.html')
+pypi_pkgs <- xml2::read_html(here::here('./data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html'))
 yaml_f <- './data/oss2/processed/pkg_counts/pkg_counts.yml'
 this_script_n <- '01-pypi_simple_packages.R'
 pypi_pkgs_yml <- yaml::read_yaml(yaml_f)
