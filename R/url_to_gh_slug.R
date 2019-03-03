@@ -7,10 +7,10 @@ parse_github_slug <- function(github_url) {
   }
   
   # account for double slash in url after github.com, e.g., github.com//user/repo
-  github_url <- str_replace(github_url, 'github\\.com//', 'github\\.com/')
+  github_url <- stringr::str_replace(github_url, 'github\\.com//', 'github\\.com/')
   
   # replace https://www.github. with https://github
-  github_url <- str_replace(github_url, 'https?://www\\.github\\.', 'https?://github\\.')
+  github_url <- stringr::str_replace(github_url, 'https?://www\\.github\\.', 'https?://github\\.')
 
   if (stringr::str_detect(github_url, 'https?://.*\\.github.com/.*')) {
     # account for strings like http://dlinzer.github.com/poLCA (where usually it's github.io, not github.com)
