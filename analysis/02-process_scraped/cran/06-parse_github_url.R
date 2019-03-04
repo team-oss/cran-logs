@@ -5,14 +5,25 @@ library(stringr)
 
 source(here::here('./R/url_to_gh_slug.R'))
 
-get_variable_from_meta_tbl <- function(tbl, var) {
+get_url_from_meta_tbl <- function(tbl) {
   url <- tbl %>%
-    dplyr::filter(X1 == var) %>%
-    dplyr::pull(X2)dis
+    dplyr::filter(X1 == 'URL:') %>%
+    dplyr::pull(X2)
   if (length(url) == 0) {
     return(NA)
   } else {
     return(url)
+  }
+}
+
+get_bug_from_meta_tbl <- function(tbl) {
+  bug <- tbl %>%
+    dplyr::filter(X1 == 'BugReports:') %>%
+    dplyr::pull(X2)
+  if (length(bug) == 0) {
+    return(NA)
+  } else {
+    return(bug)
   }
 }
 
@@ -23,11 +34,16 @@ prod_osi <- readr::read_rds(here::here('./data/oss2/processed/cran/production_re
 # so we will need to parse that: `BugReports:`
 
 with_url <- prod_osi %>% 
-  dplyr::mutate(url_section = purrr::map_chr(pkg_metadata, get_variable_from_meta_tbl, var = 'URL:'),
-                bug_section = purrr::map_chr(pkg_metadata, get_variable_from_meta_tbl, var = 'BugReports:'),
+  dplyr::mutate(url_section = purrr::map_chr(pkg_metadata, get_url_from_meta_tbl),
+                bug_section = purrr::map_chr(pkg_metadata, get_bug_from_meta_tbl),
                 # separating the 2 vectors with a comma see the multiple_url_parse_gh_slug function for other delimiters
-                url = paste(url_section, bug_section, collapse = ',') 
+                url = purrr::map2_chr(url_section, bug_section, paste, sep = ',')
                 )
+
+with_url %>%
+  dplyr::filter(!is.na(url_section), !is.na(bug_section)) %>%
+  head() %>%
+  dplyr::select(pkg_name, pkg_metadata, url_section, bug_section, url)
 
 with_url$pkg_metadata[[1]]
 with_url$pkg_metadata[[2]]
@@ -95,7 +111,7 @@ gh_url %>%
   dplyr::filter(production_ready == TRUE,
                 osi_approved == TRUE,
                 !is.na(gh_slug)) %>%
-  nrow() ## 13143
+  nrow() ## 4407
 
 
 readr::write_rds(gh_url, here::here('./data/oss2/processed/cran/production_osi_gh.RDS'))
