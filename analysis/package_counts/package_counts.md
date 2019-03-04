@@ -330,25 +330,43 @@ CLONED_PYPI
 
 ```r
 all_cts <- tibble::tribble(
-  ~Variable,              ~CRAN,               ~PyPI,               ~Julia, ~CDN,
-  "Total",                TOTAL_CRAN,          TOTAL_PYPI,          NA,     NA,
-  "Production Ready",     PRODUCTION_CRAN,     PRODUCTION_PYPI,     NA,     NA,
-  "OSI Approved License", OSI_CRAN,            OSI_PYPI,            NA,     NA, 
-  "Prod + OSI",           PRODUCTION_OSI_CRAN, PRODUCTION_OSI_PYPI, NA,     NA, 
-  "Prod + OSI + Github",  PROD_OSI_GH_CRAN,    PROD_OSI_GH_PYPI,    NA,     NA,
-  "Cloned",               CLONED_CRAN,         CLONED_PYPI,         NA,     NA
+  ~Variable,                ~CRAN,               ~PyPI,               ~Julia,  ~CDN,
+  "Total",                  TOTAL_CRAN,          TOTAL_PYPI,          NA,      NA,
+  "Production Ready",       PRODUCTION_CRAN,     PRODUCTION_PYPI,     NA,      NA,
+  "OSI Approved License",   OSI_CRAN,            OSI_PYPI,            NA,      NA, 
+  "Prod + OSI",             PRODUCTION_OSI_CRAN, PRODUCTION_OSI_PYPI, NA,      NA, 
+  "Prod + OSI + Github",    PROD_OSI_GH_CRAN,    PROD_OSI_GH_PYPI,    NA,      NA,
+  "Cloned",                 CLONED_CRAN,         CLONED_PYPI,         NA,      NA,
+  "Net LOC Analysis",       NA,                  NA,                  NA,      NA,
+  "Gross LOC git analysis", NA,                  NA,                  NA,      NA
 ) %>%
-  dplyr::mutate(cran_pypi = CRAN + PyPI)
+  dplyr::mutate(cran_pypi = purrr::map2_int(CRAN, PyPI, .f = sum, na.rm = TRUE))
 knitr::kable(all_cts)
 ```
 
 
 
-Variable                 CRAN     PyPI  Julia   CDN    cran_pypi
----------------------  ------  -------  ------  ----  ----------
-Total                   13719   165738  NA      NA        179457
-Production Ready        13350    17482  NA      NA         30832
-OSI Approved License    13504    30909  NA      NA         44413
-Prod + OSI              13143    15043  NA      NA         28186
-Prod + OSI + Github      4407    11016  NA      NA         15423
-Cloned                   4386    10609  NA      NA         14995
+Variable                   CRAN     PyPI  Julia   CDN    cran_pypi
+-----------------------  ------  -------  ------  ----  ----------
+Total                     13719   165738  NA      NA        179457
+Production Ready          13350    17482  NA      NA         30832
+OSI Approved License      13504    30909  NA      NA         44413
+Prod + OSI                13143    15043  NA      NA         28186
+Prod + OSI + Github        4407    11016  NA      NA         15423
+Cloned                     4386    10609  NA      NA         14995
+Net LOC Analysis             NA       NA  NA      NA             0
+Gross LOC git analysis       NA       NA  NA      NA             0
+
+# Consort Diagram
+
+
+```r
+library(DiagrammeR)
+library(glue)
+```
+
+
+
+<!--html_preserve--><div id="htmlwidget-6338c21e620927ec787d" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6338c21e620927ec787d">{"x":{"diagram":"digraph g {\n  cran000 [shape = box, label = \"CRAN\n13719\"];\n  cran010 [shape = box, label = \"Production ready\nN=13350\"];\n  cran020 [shape = box, label = \"OSI\nN=13504\"];\n  cran025 [shape = box, label = \"Production + OSI\nN=13143\"];\n  cran030 [shape = box, label = \"Production + OSI + Github\nN=4407\"];\n  cran035 [shape = box, label = \"Production + OSI + Github + Clone\nN=4386\"];\n\n  py000 [shape = box, label = \"PyPI\nN=165738\"];\n  py010 [shape = box, label = \"Production/Stable/Mature\nN=17482\"];\n  py020 [shape = box, label = \"OSI\nN=30909\"];\n  py025 [shape = box, label = \"Production + OSI\nN=15043\"];\n  py030 [shape = box, label = \"Production + OSI + Github\nN=11016\"];\n  py040 [shape = box, label = \"Production + OSI + Github + Clone\nN=10609\"];\n\n  cran000 -> cran010;\n  cran000 -> cran020;\n  cran010 -> cran025;\n  cran025 -> cran030;\n  cran030 -> cran035;\n\n  py000 -> py010;\n  py000 -> py020\n  py010 -> py025;\n  py025 -> py030;\n  py030 -> py040;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><!--/html_preserve-->
+

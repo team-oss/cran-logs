@@ -220,15 +220,17 @@ CLONED_PYPI
 
 ```{r}
 all_cts <- tibble::tribble(
-  ~Variable,              ~CRAN,               ~PyPI,               ~Julia, ~CDN,
-  "Total",                TOTAL_CRAN,          TOTAL_PYPI,          NA,     NA,
-  "Production Ready",     PRODUCTION_CRAN,     PRODUCTION_PYPI,     NA,     NA,
-  "OSI Approved License", OSI_CRAN,            OSI_PYPI,            NA,     NA, 
-  "Prod + OSI",           PRODUCTION_OSI_CRAN, PRODUCTION_OSI_PYPI, NA,     NA, 
-  "Prod + OSI + Github",  PROD_OSI_GH_CRAN,    PROD_OSI_GH_PYPI,    NA,     NA,
-  "Cloned",               CLONED_CRAN,         CLONED_PYPI,         NA,     NA
+  ~Variable,                ~CRAN,               ~PyPI,               ~Julia,  ~CDN,
+  "Total",                  TOTAL_CRAN,          TOTAL_PYPI,          NA,      NA,
+  "Production Ready",       PRODUCTION_CRAN,     PRODUCTION_PYPI,     NA,      NA,
+  "OSI Approved License",   OSI_CRAN,            OSI_PYPI,            NA,      NA, 
+  "Prod + OSI",             PRODUCTION_OSI_CRAN, PRODUCTION_OSI_PYPI, NA,      NA, 
+  "Prod + OSI + Github",    PROD_OSI_GH_CRAN,    PROD_OSI_GH_PYPI,    NA,      NA,
+  "Cloned",                 CLONED_CRAN,         CLONED_PYPI,         NA,      NA,
+  "Net LOC Analysis",       NA,                  NA,                  NA,      NA,
+  "Gross LOC git analysis", NA,                  NA,                  NA,      NA
 ) %>%
-  dplyr::mutate(cran_pypi = CRAN + PyPI)
+  dplyr::mutate(cran_pypi = purrr::map2_int(CRAN, PyPI, .f = sum, na.rm = TRUE))
 knitr::kable(all_cts)
 ```
 
@@ -238,11 +240,6 @@ knitr::kable(all_cts)
 library(DiagrammeR)
 library(glue)
 ```
-
-```{r}
-glue::glue('hello \\{')
-```
-
 
 ```{r, echo=FALSE}
 dot_f <- glue('
@@ -275,7 +272,7 @@ digraph g {
 }', .open = "<<", .close = ">>")
 ```
 
-```{r}
-grViz(diagram = dot_f)
+```{r, echo=FALSE}
+DiagrammeR::grViz(diagram = dot_f)
 ```
 
