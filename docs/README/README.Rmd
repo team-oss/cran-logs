@@ -1,0 +1,80 @@
+---
+title: "Untitled"
+output:
+  github_document:
+    toc: true
+    toc_depth: 2
+editor_options: 
+  chunk_output_type: console
+always_allow_html: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r, include=FALSE, warning=FALSE, message=FALSE, echo=FALSE}
+library(here)
+library(readr)
+library(dplyr)
+library(knitr)
+library(kableExtra)
+
+tbl_doc <- readr::read_tsv(here::here('./docs/oss2_table_documentation.tsv'))
+```
+
+
+# CRAN Logs
+
+Script that downloaded the daily package download logs and daily r-base download logs from the rstudio CRAN mirror:
+`./analysis/01-scrape_package_data/cran/logs`
+
+- package: `'./data/oss2/original/cran/logs/pkg/'`
+- r-base: `'./data/oss2/original/cran/logs/r/'`
+
+# Lines of Code Analysis
+
+In general, the scripts under `Getting Data` are making API calls,
+and running them may take a long time (or may not work depending on API changes).
+
+### R (CRAN)
+
+### Python (PyPI)
+
+Running order
+
+1. Getting Data: `./analysis/01-scrape_package_data/pypi/`
+2. Processing Data: `./analysis/02-process_scraped/pypi/`
+
+```{r}
+tbl_doc %>%
+  dplyr::select(run_order, "Getting Data":Notes) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(full_width = TRUE)
+```
+
+```{r}
+tbl_doc %>%
+  dplyr::select(run_order, "Getting Data":"Github", input:output) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(full_width = TRUE)
+```
+
+
+
+### JavaScript (CDN)
+
+Running order
+
+| Getting Data               	| Parsing Data                            	|
+|----------------------------	|-----------------------------------------	|
+| 01-get_pkg_json_info.R     	|                                         	|
+|                            	| 01-cdn_pkg_info.R                       	|
+
+1. `01-get_pkg_json_info.R`: download package infor from `https://api.cdnjs.com/libraries/`
+  - input: None
+  - output: `/data/oss2/original/cdn/libraries_json/`
+
+  - input: `'./data/oss2/original/cdn/libraries_json/'`
+
+### Julia
