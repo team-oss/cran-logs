@@ -11,6 +11,7 @@ always_allow_html: yes
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+options(knitr.kable.NA = '') # do not show NA in tables
 ```
 
 ```{r, include=FALSE, warning=FALSE, message=FALSE, echo=FALSE}

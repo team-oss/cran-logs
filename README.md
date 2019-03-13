@@ -59,10 +59,8 @@ Notes
 01-get\_pypi\_simple.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Use <http://pypi.org/simple/> to get a list of all the packages listed on pypi.
@@ -76,10 +74,8 @@ Use <http://pypi.org/simple/> to get a list of all the packages listed on pypi.
 02-get\_pkg\_html\_simple.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 We get the URL for each of the packages listed in pypi.org/simple, and save the page to a html file that we can parse.
@@ -90,13 +86,11 @@ We get the URL for each of the packages listed in pypi.org/simple, and save the 
 3
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 01-pypi\_simple\_packages.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Counts the number of URLS obtained by pypi.org/simple (conversly, the number of packages on PyPI) -- on January 23, 2019
@@ -107,13 +101,11 @@ Counts the number of URLS obtained by pypi.org/simple (conversly, the number of 
 4
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 02-pypi\_simple\_latest\_src\_dl\_url.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Takes the last package version listed in each of the package HTML pages. We capture this link in order to get the "latest" version of the package listed in pypi.org/simple.
@@ -127,10 +119,8 @@ Takes the last package version listed in each of the package HTML pages. We capt
 03-01-get\_pkg\_source\_simple.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 The dataset from `02-pypi_simple_latest_src_dl_url.R` only returns the URL to download the package, this script then goes through each of the URLs and saves it into the corresponding download location (which is found in the dataset).
@@ -141,13 +131,11 @@ The dataset from `02-pypi_simple_latest_src_dl_url.R` only returns the URL to do
 6
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 03-01-downloaded\_src\_simple\_metadata.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 the `03-xx` series of script all process the metadata from the downloaded package source files. We first use the python `pkginfo` package to introspect each of the downloaded packages. We accounted for `.whl`, `.gz`, `.zip`, `.egg`, `.bz2`, and `.tgz` extensions. The corresponding function within pkginfo is used for each of the various file extensions, and we save the reponse to a column in our dataset. This script takes a long time to run (~20-30 minutes), that is why these steps are broken up into multiple parts. This script only saves the reponse from `pkginfo` into a column. These python scripts save out data in both `csv` and `pickle` formats, the `csv` is really there as a convenience, but all the binary information will be lost. The `pickle` format is what is actually used between scripts.
@@ -158,13 +146,11 @@ the `03-xx` series of script all process the metadata from the downloaded packag
 7
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 03-02-downloaded\_src\_simple\_metadata.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Information about each package is stored in a python object (from pkginfo). Here we take all the object attributes (stored as a Python dictionary) and converrt it into a dataframe object. We may not have gotten every bit of information stored in the object, but it captures all the information we want in this project. There is a renaming of the "name" variable to "name\_pypi" here, since one of the attributes is also called "name". It's important here that you use the "name\_pypi" as the primary key moving forward, since the "name" from the attribute does not always match what was captured from PyPI.
@@ -175,13 +161,11 @@ Information about each package is stored in a python object (from pkginfo). Here
 8
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 03-03-parse\_production\_ready.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Development status is captured by the classifier variable, which stores a list of strings of various other "classifications" for the package. Here we extract/parse out the development status string from the classifier variable. The goal is to perform an analysis on "production/stable" and "mature" packages.
@@ -192,13 +176,11 @@ Development status is captured by the classifier variable, which stores a list o
 9
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 04-second\_pass\_production\_ready.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Since we looked at the "latest" source file when we were getting information from pypi.org/simple, not all packages that were "production ready" were marked as such. For example, the source file we downloaded for `pandas` was an alpha release, but we know it is a "production ready" package Takes the packages that were not already marked as production/stable or mature, and builds the pip download command to download source packages directly from pip.
@@ -212,10 +194,8 @@ Since we looked at the "latest" source file when we were getting information fro
 03-02-get\_pkg\_source\_pip.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Runs the pip download command to download the latest pip installable package source. This was to capture package sources downloaded from 03-01 that were potentially alpha or other "non production ready" releases. If the analysis were to be redone, we would use this method directly (i.e., use pip download instead of manually downloading the "latest" source). This means that `03-01-get_pkg_source_simple.R` to `03-03-parse_production_ready.py` would not need to be run, and we would capture the pip downloads directly.
@@ -226,13 +206,11 @@ Runs the pip download command to download the latest pip installable package sou
 11
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 05-01-noprod-downloaded\_src\_simple\_metadata.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 these scripts all follow the same process as the 03-0x counterparts. Since the code and functions were not setup to be a python module, any changes in the 05-0x set of scripts need to be manually changed in the 03-0x set of scripts, or vice versa.
@@ -245,13 +223,11 @@ This script introspects the downloaded sources (this time form pip download) and
 12
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 05-02-noprod-downloaded\_src\_simple\_metadata.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Take the object from pkginfo and pivot the attributes to a dataframe
@@ -262,13 +238,11 @@ Take the object from pkginfo and pivot the attributes to a dataframe
 13
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 05-03-noprod-parse\_production\_ready.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Clean up the development status from the classifier variable
@@ -279,13 +253,11 @@ Clean up the development status from the classifier variable
 14
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 06-combine\_fpass\_noprod.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Since we collected "production ready" packages in multiple ways, this script combines the datasets so we have a single dataset we can use to filter "production ready" status. We filter out dataset here for those packages that are "production/stable" and "mature" as defined by the deveopment status from the classifier variable.
@@ -299,10 +271,8 @@ Since we collected "production ready" packages in multiple ways, this script com
 04-licenses.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Make sure you have the LIBRARIES\_IO\_API\_KEY defined in your r environment.
@@ -315,13 +285,11 @@ Takes the "production ready" packages and uses the libraries.io API to get more 
 16
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 07-01-parse\_librariesio\_licenses.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Parse the GET response from libraries.io to get the 'normalized\_licenses' value. Some packages have multiple licenses listed (some have up to 4). The first license was used as the license from libraries.io (saved as the column `l`)
@@ -332,13 +300,11 @@ Parse the GET response from libraries.io to get the 'normalized\_licenses' value
 17
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 07-02-osi\_approved.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 There is a master list of OSI approved licenses that is used in this step. It helps keep track of all the OSI licenses and the ways they can be typed in a license field.
@@ -353,13 +319,11 @@ Once we have all the license infomation, we mark each package as having an OSI-a
 18
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 08-combine\_before\_gh.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 Combine the information about "production ready" status with "osi approved license" to get a final set of packages that we will use to pull from github. Once we have the production-ready-osi-approved packages, we then use `home_page` column to potentially get a Github URL, if no github url was provided in the `home_page` column, we used the `download_url` column. This was similar to looking at the URL and Bug Report information in the CRAN analysis. Some github URLs were just the username, so we created the github slug by appending the python package name to create the user/repo slug.
@@ -372,10 +336,8 @@ We end up with a dataset of github slugs (which we can use to clone information)
 19
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 01-04-clone\_pypi.R
@@ -418,13 +380,10 @@ output
 01-get\_pypi\_simple.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/original/pypi/pypi\_simple/2019-01-23-pypi\_simple.html'
@@ -438,10 +397,8 @@ NA
 02-get\_pkg\_html\_simple.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/original/pypi/pypi\_simple/2019-01-23-pypi\_simple.html'
@@ -455,19 +412,16 @@ NA
 3
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 01-pypi\_simple\_packages.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/original/pypi/pypi\_simple/2019-01-23-pypi\_simple.html',
 </td>
 <td style="text-align:left;">
-NA
 </td>
 </tr>
 <tr>
@@ -475,13 +429,11 @@ NA
 4
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 02-pypi\_simple\_latest\_src\_dl\_url.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/original/pypi/pypi\_simple/simple\_pkg\_htmls', './data/oss2/original/pypi/pypi\_simple/2019-01-23-pypi\_simple.html'
@@ -498,10 +450,8 @@ NA
 03-01-get\_pkg\_source\_simple.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/processed/pypi/simple\_url\_src\_paths.csv'
@@ -515,13 +465,11 @@ NA
 6
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 03-01-downloaded\_src\_simple\_metadata.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/original/pypi/pypi\_simple/simple\_pkg\_src/', './data/oss2/processed/pypi/simple\_url\_src\_paths.csv'
@@ -535,13 +483,11 @@ NA
 7
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 03-02-downloaded\_src\_simple\_metadata.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/processed/working/pypi/simple\_downloaded\_pkginfo\_attr.pickle'
@@ -555,13 +501,11 @@ NA
 8
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 03-03-parse\_production\_ready.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/processed/working/pypi/parsed\_pkg\_attributes.pickle'
@@ -575,13 +519,11 @@ NA
 9
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 04-second\_pass\_production\_ready.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/processed/working/pypi/production\_ready\_first\_pass.pickle'
@@ -598,16 +540,13 @@ NA
 03-02-get\_pkg\_source\_pip.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/processed/working/pypi/non\_production\_ready\_pip\_download.pickle'
 </td>
 <td style="text-align:left;">
-NA
 </td>
 </tr>
 <tr>
@@ -615,13 +554,11 @@ NA
 11
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 05-01-noprod-downloaded\_src\_simple\_metadata.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/processed/working/pypi/non\_production\_ready\_pip\_download.pickle'
@@ -635,13 +572,11 @@ NA
 12
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 05-02-noprod-downloaded\_src\_simple\_metadata.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/processed/working/pypi/simple\_downloaded\_pkginfo\_attr\_noprod.pickle'
@@ -655,13 +590,11 @@ NA
 13
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 05-03-noprod-parse\_production\_ready.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/processed/working/pypi/parsed\_pkg\_attributes\_noprod.pickle'
@@ -675,13 +608,11 @@ NA
 14
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 06-combine\_fpass\_noprod.py
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/processed/working/pypi/production\_ready\_noprod.pickle', './data/oss2/processed/working/pypi/production\_ready\_first\_pass.pickle'
@@ -698,10 +629,8 @@ NA
 04-licenses.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/processed/working/pypi/production\_ready.csv'
@@ -715,13 +644,11 @@ NA
 16
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 07-01-parse\_librariesio\_licenses.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/processed/working/pypi/production\_ready.csv', './data/oss2/original/pypi/libraries.io'
@@ -735,13 +662,11 @@ NA
 17
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 07-02-osi\_approved.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 "./data/oss2/original/osi\_licenses\_all\_projects.csv", './data/oss2/processed/pypi/librariesio\_licenses.RDS'
@@ -755,13 +680,11 @@ NA
 18
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 08-combine\_before\_gh.R
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 ./data/oss2/processed/working/pypi/production\_ready.csv', './data/oss2/processed/pypi/osi\_approved.RDS'
@@ -775,10 +698,8 @@ NA
 19
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
-NA
 </td>
 <td style="text-align:left;">
 01-04-clone\_pypi.R
@@ -787,7 +708,6 @@ NA
 ./data/oss2/processed/pypi/prod\_osi\_gh.RDS'
 </td>
 <td style="text-align:left;">
-NA
 </td>
 </tr>
 </tbody>
