@@ -1,5 +1,5 @@
 ---
-title: "Untitled"
+title: "OSS2"
 output:
   github_document:
     toc: true
@@ -23,7 +23,6 @@ library(kableExtra)
 
 tbl_doc <- readr::read_tsv(here::here('./docs/oss2_table_documentation.tsv'))
 ```
-# OSS2
 
 The code for pulling the data used in the OSS project/paper to measure the cost of open-source software by looking at lines of code
 
