@@ -23,6 +23,19 @@ library(kableExtra)
 
 tbl_doc <- readr::read_tsv(here::here('./docs/oss2_table_documentation.tsv'))
 ```
+# OSS2
+
+The code for pulling the data used in the OSS project/paper to measure the cost of open-source software by looking at lines of code
+
+###### Comments about this README document
+**DO NOT** edit the `README.md` file directly, it is generated from the `./docs/README/README.Rmd` file by running
+
+```bash
+make readme
+```
+
+If you use a version of R < 3.5 (i.e., 3.4), you will see the back slash `\` before the underscores `_` in the rendered tables.
+Please see this related issue: https://github.com/haozhu233/kableExtra/issues/186
 
 
 # CRAN Logs
