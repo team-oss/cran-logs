@@ -1,17 +1,14 @@
-Untitled
+OSS2
 ================
 
-  - [OSS2](#oss2)
-      - [Comments about this README
-        document](#comments-about-this-readme-document)
+  - [Comments about this README
+    document](#comments-about-this-readme-document)
   - [CRAN Logs](#cran-logs)
   - [Lines of Code Analysis](#lines-of-code-analysis)
       - [R (CRAN)](#r-cran)
       - [Python (PyPI)](#python-pypi)
       - [JavaScript (CDN)](#javascript-cdn)
       - [Julia](#julia)
-
-# OSS2
 
 The code for pulling the data used in the OSS project/paper to measure
 the cost of open-source software by looking at lines of code
