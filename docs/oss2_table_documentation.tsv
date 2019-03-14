@@ -1,7 +1,7 @@
 analysis	run_order	Getting Data	Processing Data	Github	Notes	input	output
 pypi	1	01-get_pypi_simple.R			Use http://pypi.org/simple/ to get a list of all the packages listed on pypi.		./data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html'
-pypi	2	02-get_pkg_html_simple.R			"We get the URL for each of the packages listed in pypi.org/simple, and save the page to a html file that we can parse."	./data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html'	./data/oss2/original/pypi/pypi_simple/simple_pkg_htmls/'
-pypi	3		01-pypi_simple_packages.R		"Counts the number of URLS obtained by pypi.org/simple (conversly, the number of packages on PyPI) -- on January 23, 2019"	"./data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html',"	
+pypi	2	02-get_pkg_html_simple.R			We get the URL for each of the packages listed in pypi.org/simple, and save the page to a html file that we can parse.	./data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html'	./data/oss2/original/pypi/pypi_simple/simple_pkg_htmls/'
+pypi	3		01-pypi_simple_packages.R		Counts the number of URLS obtained by pypi.org/simple (conversly, the number of packages on PyPI) -- on January 23, 2019	./data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html',	
 pypi	4		02-pypi_simple_latest_src_dl_url.R		"Takes the last package version listed in each of the package HTML pages. We capture this link in order to get the ""latest"" version of the package listed in pypi.org/simple."	"./data/oss2/original/pypi/pypi_simple/simple_pkg_htmls',
 './data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html'"	./data/oss2/processed/pypi/simple_url_src_paths.csv'
 pypi	5	03-01-get_pkg_source_simple.R			"The dataset from `02-pypi_simple_latest_src_dl_url.R` only returns the URL to download the package,
@@ -78,3 +78,31 @@ We end up with a dataset of github slugs (which we can use to clone information)
 pypi	19			01-04-clone_pypi.R	"Clones the github projects from the parsed github slug (user/repo).
 Not all slugs were valid (i.e., not all github clone urls were valid).
 This is because some repositories do not exist anymore, they could've been renamed, and sometimes the user (i.e., owner) does not exist anymore."	./data/oss2/processed/pypi/prod_osi_gh.RDS'	
+cran	1	01-get_cran_packages.R			"Reads and saves the HTML from the CRAN website: 'https://cran.r-project.org/web/packages/available_packages_by_name.html'.
+This file automatically saves the date the script was run in the output file."		./data/oss2/original/cran/2019-02-16-cran-pkgs.html'
+cran	2		01-get_pkg_names.R		"Gets the URLs for each CRAN package page.
+Sets up the dataset for package name, package page URL, and package page download location."	./data/oss2/original/cran/2019-02-16-cran-pkgs.html'	./data/oss2/processed/pkg_links.csv'
+cran	3	02-download_cran_pkg_pages.R			Downloads the package page HTML as specified by the url and save output in the input file.	./data/oss2/processed/pkg_links.csv'	
+cran	4		02-get_cran_check_links.R		Similar to the 01-get_pkg_name.R script, but this gets the URL for the CRAN checks page for all the packages.	./data/oss2/processed/pkg_links.csv'	./data/oss2/processed/cran/cran_pkg_chk.RDS'
+cran	5	03-get_cran_chk_pages.R			Downloads the package page HTML as specified by the url and save output in the input file.	./data/oss2/processed/cran/cran_pkg_chk.RDS'	
+cran	6		03-parse_cran_check_results.R		"Used the same heuristics used in the summer to determine “production ready”.
+There are different systems each package is checked against.
+We use the ones that are “release” versions to check whether a package is “production ready”.
+From there we look at the build status of the package for the releases.
+A package is marked as “production ready” if all the values are either “OK”, “NOTE”, or “WARN”.
+That means a package is marked as “not production ready” if any of the values are “ERROR”, or “FAIL”."	./data/oss2/processed/cran/cran_pkg_chk.RDS'	'./data/oss2/processed/cran/cran_prod_rdy.csv'
+cran	7		04-prase_cran_licenses.R		Extracts the text from the “License: ” portion of the CRAN package page	./data/oss2/processed/pkg_links.csv'	./data/oss2/processed/cran/cran_meta_licenses_raw.RDS'
+cran	8		04-filter_osi_licenses.R		"Uses the master osi license file to tag osi approved licenses.
+There is a visual check here, but it seems that those packages that are not OSI approved are CC and ACM “licenses”."	"./data/oss2/processed/cran/cran_meta_licenses_raw.RDS',
+'./data/oss2/original/osi_licenses_all_projects.csv'"	./data/oss2/processed/cran/cran_osi_licenses.RDS'
+cran	9		05-prod_osi.R		Combines the production-ready data with the osi-approved data and then filter down packages that are both production-ready and osi-approved.	"./data/oss2/processed/cran/cran_prod_rdy.csv',
+'./data/oss2/processed/cran/cran_osi_licenses.RDS'"	./data/oss2/processed/cran/production_ready_osi_approved.RDS'
+cran	10		06-parse_github_url.R		"Uses the link(s) provided by the “URL” value on the CRAN package page to potentially parse a github URL.
+If multiple github-like URLs are provided, we use the first one listed.
+If no github URLs are found in the “URL” section, we use look at the “Bugreport” value on the CRAN package page.
+If there is a github URL there we use that as the github URL to get a github user/repo slug.
+We use thig slug to create a clone URL to clone (i.e., download) the cran package from github."	./data/oss2/processed/cran/production_ready_osi_approved.RDS'	./data/oss2/processed/cran/production_osi_gh.RDS'
+cran	11	01-get_cran_pkg_src.R			Extracts the text from the “package source” portion of the CRAN package page to create a download URL for the current package source compressed file.	./data/oss2/processed/pkg_links.csv'	./data/oss2/processed/cran/cran_src_pkg_dl_links.csv'
+cran	12	02-download_cran_pkg_src.R			Downloads the files from the data specified in the input data.	./data/oss2/processed/cran/cran_src_pkg_dl_links.csv'	
+cran	13			01-03-clone_cran.R	"Clones the github projects from the parsed github slug (user/repo). Not all slugs were valid (i.e., not all github clone urls were valid).
+This is because some repositories do not exist anymore, they could've been renamed, and sometimes the user (i.e., owner) does not exist anymore."	./data/oss2/processed/cran/production_osi_gh.RDS'	
