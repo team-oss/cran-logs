@@ -54,23 +54,31 @@ and running them may take a long time (or may not work depending on API changes)
 
 ### Python (PyPI)
 
+```{r}
+pypi <- tbl_doc %>%
+  dplyr::filter(analysis == 'pypi')
+```
+
+
 Running order
 
 1. Getting Data: `./analysis/01-scrape_package_data/pypi/`
 2. Processing Data: `./analysis/02-process_scraped/pypi/`
 
-```{r}
-tbl_doc %>%
+```{r, results='asis'}
+pypi %>%
   dplyr::select(run_order, "Getting Data":Notes) %>%
   knitr::kable() %>%
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                            full_width = TRUE)
 ```
 
-```{r}
-tbl_doc %>%
+```{r, results='asis'}
+pypi %>%
   dplyr::select(run_order, "Getting Data":"Github", input:output) %>%
   knitr::kable() %>%
-  kableExtra::kable_styling(full_width = TRUE)
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                            full_width = TRUE)
 ```
 
 
