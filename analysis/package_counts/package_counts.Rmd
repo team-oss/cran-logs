@@ -244,7 +244,7 @@ library(glue)
 ```{r, echo=FALSE}
 dot_f <- glue('
 digraph g {
-  cran000 [shape = box, label = "CRAN\n<<TOTAL_CRAN>>"];
+  cran000 [shape = box, label = "CRAN\nN=<<TOTAL_CRAN>>"];
   cran010 [shape = box, label = "Production ready\nN=<<PRODUCTION_CRAN>>"];
   cran020 [shape = box, label = "OSI\nN=<<OSI_CRAN>>"];
   cran025 [shape = box, label = "Production + OSI\nN=<<PRODUCTION_OSI_CRAN>>"];
