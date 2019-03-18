@@ -33,14 +33,17 @@ The code for pulling the data used in the OSS project/paper to measure the cost 
 make readme
 ```
 
-If you use a version of R < 3.5 (i.e., 3.4), you will see the back slash `\` before the underscores `_` in the rendered tables.
-Please see this related issue: https://github.com/haozhu233/kableExtra/issues/186
+If you use a version of R < 3.5 (i.e., 3.4), you will see the back slash `\` before the underscores `_` in the rendered `html` tables.
+Please see this related issue: https://github.com/haozhu233/kableExtra/issues/186.
+However you'll still see the `\` before the underscores in the final markdown output (see issue: )
 
 
 # CRAN Logs
 
 Script that downloaded the daily package download logs and daily r-base download logs from the rstudio CRAN mirror:
 `./analysis/01-scrape_package_data/cran/logs`
+
+This script dumps out the r and package logs in the following folders:
 
 - package: `'./data/oss2/original/cran/logs/pkg/'`
 - r-base: `'./data/oss2/original/cran/logs/r/'`
@@ -49,8 +52,39 @@ Script that downloaded the daily package download logs and daily r-base download
 
 In general, the scripts under `Getting Data` are making API calls,
 and running them may take a long time (or may not work depending on API changes).
+Code that parses downloaded data are in the `Processing Data` section.
+Github `clones` are under the `Github` section.
 
 ### R (CRAN)
+
+```{r}
+cran <- tbl_doc %>%
+  dplyr::filter(analysis == 'cran')
+```
+
+
+Running order
+
+1. Getting Data: `./analysis/01-scrape_package_data/cran/cran_data/`
+2. Processing Data: `./analysis/02-process_scraped/cran/`
+3. Github: `./analysis/03-github/`
+
+```{r, results='asis'}
+cran %>%
+  dplyr::select(run_order, "Getting Data":Notes) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                            full_width = TRUE)
+```
+
+```{r, results='asis'}
+cran %>%
+  dplyr::select(run_order, "Getting Data":"Github", input:output) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                            full_width = TRUE)
+```
+
 
 ### Python (PyPI)
 
@@ -64,6 +98,7 @@ Running order
 
 1. Getting Data: `./analysis/01-scrape_package_data/pypi/`
 2. Processing Data: `./analysis/02-process_scraped/pypi/`
+3. Github: `./analysis/03-github/`
 
 ```{r, results='asis'}
 pypi %>%
@@ -81,21 +116,6 @@ pypi %>%
                             full_width = TRUE)
 ```
 
-
-
 ### JavaScript (CDN)
-
-Running order
-
-| Getting Data               	| Parsing Data                            	|
-|----------------------------	|-----------------------------------------	|
-| 01-get_pkg_json_info.R     	|                                         	|
-|                            	| 01-cdn_pkg_info.R                       	|
-
-1. `01-get_pkg_json_info.R`: download package infor from `https://api.cdnjs.com/libraries/`
-  - input: None
-  - output: `/data/oss2/original/cdn/libraries_json/`
-
-  - input: `'./data/oss2/original/cdn/libraries_json/'`
 
 ### Julia
