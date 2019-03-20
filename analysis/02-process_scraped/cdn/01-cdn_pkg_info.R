@@ -85,6 +85,10 @@ licenses_first <- cdn_info %>% select(tidyselect::contains('license')) %>%
 
 cdn_info$license_first <- licenses_first
 
+# note this uses an outdated OSI master license file
+# you should use the one generated from './analysis/osi_licenses/create_master_osi_approved.R'
+# and added any "new" licenses for CDN in that script
+# like how was done for cran and pypi
 osi_licenses <- readr::read_csv('./data/oss/final/PyPI/osi_approved_licenses.csv')
 
 
