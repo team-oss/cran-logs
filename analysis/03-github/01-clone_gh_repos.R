@@ -118,6 +118,3 @@ julia_pkgs <- julia_gh %>%
 purrr::map2(.x = julia_pkgs$clone_urls,
             .y = here::here(julia_pkgs$repo_save_path),
             .f = download_git_repo)
-
-
-
