@@ -1,6 +1,11 @@
 *~
 nohup.out
 README.html
+output/*
+*.html
+*.csv
+*_cache
+*_files
 
 Untitled*.ipynb
 .ipynb_checkpoints
