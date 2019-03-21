@@ -1,12 +1,12 @@
-analysis	run_order	Getting Data	Processing Data	Github	Notes	input	output
-pypi	1	01-get_pypi_simple.R			Use http://pypi.org/simple/ to get a list of all the packages listed on pypi.		./data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html'
-pypi	2	02-get_pkg_html_simple.R			We get the URL for each of the packages listed in pypi.org/simple, and save the page to a html file that we can parse.	./data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html'	./data/oss2/original/pypi/pypi_simple/simple_pkg_htmls/'
-pypi	3		01-pypi_simple_packages.R		Counts the number of URLS obtained by pypi.org/simple (conversly, the number of packages on PyPI) -- on January 23, 2019	./data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html',	
-pypi	4		02-pypi_simple_latest_src_dl_url.R		"Takes the last package version listed in each of the package HTML pages. We capture this link in order to get the ""latest"" version of the package listed in pypi.org/simple."	"./data/oss2/original/pypi/pypi_simple/simple_pkg_htmls',
+analysis	run_order	Getting Data	Processing Data	Github	Git Analysis	Notes	input	output
+pypi	1	01-get_pypi_simple.R				Use http://pypi.org/simple/ to get a list of all the packages listed on pypi.		./data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html'
+pypi	2	02-get_pkg_html_simple.R				We get the URL for each of the packages listed in pypi.org/simple, and save the page to a html file that we can parse.	./data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html'	./data/oss2/original/pypi/pypi_simple/simple_pkg_htmls/'
+pypi	3		01-pypi_simple_packages.R			Counts the number of URLS obtained by pypi.org/simple (conversly, the number of packages on PyPI) -- on January 23, 2019	./data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html',	
+pypi	4		02-pypi_simple_latest_src_dl_url.R			"Takes the last package version listed in each of the package HTML pages. We capture this link in order to get the ""latest"" version of the package listed in pypi.org/simple."	"./data/oss2/original/pypi/pypi_simple/simple_pkg_htmls',
 './data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html'"	./data/oss2/processed/pypi/simple_url_src_paths.csv'
-pypi	5	03-01-get_pkg_source_simple.R			"The dataset from `02-pypi_simple_latest_src_dl_url.R` only returns the URL to download the package,
+pypi	5	03-01-get_pkg_source_simple.R				"The dataset from `02-pypi_simple_latest_src_dl_url.R` only returns the URL to download the package,
 this script then goes through each of the URLs and saves it into the corresponding download location (which is found in the dataset)."	./data/oss2/processed/pypi/simple_url_src_paths.csv'	./data/oss2/original/pypi/pypi_simple/simple_pkg_src/'
-pypi	6		03-01-downloaded_src_simple_metadata.py		"the `03-xx` series of script all process the metadata from the downloaded package source files.
+pypi	6		03-01-downloaded_src_simple_metadata.py			"the `03-xx` series of script all process the metadata from the downloaded package source files.
 We first use the python `pkginfo` package to introspect each of the downloaded packages. We accounted for `.whl`, `.gz`, `.zip`, `.egg`, `.bz2`, and `.tgz` extensions.
 The corresponding function within pkginfo is used for each of the various file extensions, and we save the reponse to a column in our dataset.
 This script takes a long time to run (~20-30 minutes), that is why these steps are broken up into multiple parts.
@@ -15,50 +15,50 @@ These python scripts save out data in both `csv` and `pickle` formats, the `csv`
 The `pickle` format is what is actually used between scripts."	"./data/oss2/original/pypi/pypi_simple/simple_pkg_src/',
 './data/oss2/processed/pypi/simple_url_src_paths.csv'"	"./data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr.csv',
 './data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr.pickle'"
-pypi	7		03-02-downloaded_src_simple_metadata.py		"Information about each package is stored in a python object (from pkginfo). Here we take all the object attributes (stored as a Python dictionary) and converrt it into a dataframe object.
+pypi	7		03-02-downloaded_src_simple_metadata.py			"Information about each package is stored in a python object (from pkginfo). Here we take all the object attributes (stored as a Python dictionary) and converrt it into a dataframe object.
 We may not have gotten every bit of information stored in the object, but it captures all the information we want in this project.
 There is a renaming of the ""name"" variable to ""name_pypi"" here, since one of the attributes is also called ""name"".
 It's important here that you use the ""name_pypi"" as the primary key moving forward, since the ""name"" from the attribute does not always match what was captured from PyPI."	./data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr.pickle'	"./data/oss2/processed/working/pypi/parsed_pkg_attributes.csv',
 './data/oss2/processed/working/pypi/parsed_pkg_attributes.pickle'"
-pypi	8		03-03-parse_production_ready.py		"Development status is captured by the classifier variable, which stores a list of strings of various other ""classifications"" for the package.
+pypi	8		03-03-parse_production_ready.py			"Development status is captured by the classifier variable, which stores a list of strings of various other ""classifications"" for the package.
 Here we extract/parse out the development status string from the classifier variable.
 The goal is to perform an analysis on ""production/stable"" and ""mature"" packages."	./data/oss2/processed/working/pypi/parsed_pkg_attributes.pickle'	"./data/oss2/processed/working/pypi/production_ready_first_pass.pickle',
 './data/oss2/processed/working/pypi/production_ready_first_pass.csv'"
-pypi	9		04-second_pass_production_ready.py		"Since we looked at the ""latest"" source file when we were getting information from pypi.org/simple, not all packages that were ""production ready"" were marked as such.
+pypi	9		04-second_pass_production_ready.py			"Since we looked at the ""latest"" source file when we were getting information from pypi.org/simple, not all packages that were ""production ready"" were marked as such.
 For example, the source file we downloaded for `pandas` was an alpha release, but we know it is a ""production ready"" package
 Takes the packages that were not already marked as production/stable or mature, and builds the pip download command to download source packages directly from pip."	./data/oss2/processed/working/pypi/production_ready_first_pass.pickle'	"./data/oss2/processed/working/pypi/non_production_ready_pip_download.pickle',
 './data/oss2/processed/working/pypi/non_production_ready_pip_download.csv'"
-pypi	10	03-02-get_pkg_source_pip.py			"Runs the pip download command to download the latest pip installable package source.
+pypi	10	03-02-get_pkg_source_pip.py				"Runs the pip download command to download the latest pip installable package source.
 This was to capture package sources downloaded from 03-01 that were potentially alpha or other ""non production ready"" releases.
 If the analysis were to be redone, we would use this method directly (i.e., use pip download instead of manually downloading the ""latest"" source).
 This means that `03-01-get_pkg_source_simple.R` to `03-03-parse_production_ready.py` would not need to be run,
 and we would capture the pip downloads directly."	./data/oss2/processed/working/pypi/non_production_ready_pip_download.pickle'	
-pypi	11		05-01-noprod-downloaded_src_simple_metadata.py		"these scripts all follow the same process as the 03-0x counterparts.
+pypi	11		05-01-noprod-downloaded_src_simple_metadata.py			"these scripts all follow the same process as the 03-0x counterparts.
 Since the code and functions were not setup to be a python module,
 any changes in the 05-0x set of scripts need to be manually changed in the 03-0x set of scripts, or vice versa.
 
 This script introspects the downloaded sources (this time form pip download) and extracts the pkginfo."	./data/oss2/processed/working/pypi/non_production_ready_pip_download.pickle'	"./data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr_noprod.csv',
 './data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr_noprod.pickle'
 "
-pypi	12		05-02-noprod-downloaded_src_simple_metadata.py		Take the object from pkginfo and pivot the attributes to a dataframe	./data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr_noprod.pickle'	"./data/oss2/processed/working/pypi/parsed_pkg_attributes_noprod.csv',
+pypi	12		05-02-noprod-downloaded_src_simple_metadata.py			Take the object from pkginfo and pivot the attributes to a dataframe	./data/oss2/processed/working/pypi/simple_downloaded_pkginfo_attr_noprod.pickle'	"./data/oss2/processed/working/pypi/parsed_pkg_attributes_noprod.csv',
 './data/oss2/processed/working/pypi/parsed_pkg_attributes_noprod.pickle'"
-pypi	13		05-03-noprod-parse_production_ready.py		Clean up the development status from the classifier variable	./data/oss2/processed/working/pypi/parsed_pkg_attributes_noprod.pickle'	"./data/oss2/processed/working/pypi/production_ready_noprod.pickle',
+pypi	13		05-03-noprod-parse_production_ready.py			Clean up the development status from the classifier variable	./data/oss2/processed/working/pypi/parsed_pkg_attributes_noprod.pickle'	"./data/oss2/processed/working/pypi/production_ready_noprod.pickle',
 './data/oss2/processed/working/pypi/production_ready_noprod.csv'"
-pypi	14		06-combine_fpass_noprod.py		"Since we collected ""production ready"" packages in multiple ways, this script combines the datasets so we have a single dataset we can use to filter ""production ready"" status.
+pypi	14		06-combine_fpass_noprod.py			"Since we collected ""production ready"" packages in multiple ways, this script combines the datasets so we have a single dataset we can use to filter ""production ready"" status.
 We filter out dataset here for those packages that are ""production/stable"" and ""mature"" as defined by the deveopment status from the classifier variable."	"./data/oss2/processed/working/pypi/production_ready_noprod.pickle',
 './data/oss2/processed/working/pypi/production_ready_first_pass.pickle'"	"./data/oss2/processed/working/pypi/production_ready.pickle',
 './data/oss2/processed/working/pypi/production_ready.csv'"
-pypi	15	04-licenses.R			"Make sure you have the LIBRARIES_IO_API_KEY defined in your r environment.
+pypi	15	04-licenses.R				"Make sure you have the LIBRARIES_IO_API_KEY defined in your r environment.
 
 Takes the ""production ready"" packages and uses the libraries.io API to get more infomration from the each package.
 We are just saving the API REST GET reponse here that will be parsed in the next step.
 Because the license field of the metadata from pkginfo is all user reported, there are 7000+ unique values put in for license.
 We use libraries.io here to get a more standardized list of licenses."	./data/oss2/processed/working/pypi/production_ready.csv'	./data/oss2/original/pypi/libraries.io'
-pypi	16		07-01-parse_librariesio_licenses.R		"Parse the GET response from libraries.io to get the 'normalized_licenses' value.
+pypi	16		07-01-parse_librariesio_licenses.R			"Parse the GET response from libraries.io to get the 'normalized_licenses' value.
 Some packages have multiple licenses listed (some have up to 4).
 The first license was used as the license from libraries.io (saved as the column `l`)"	"./data/oss2/processed/working/pypi/production_ready.csv',
 './data/oss2/original/pypi/libraries.io'"	./data/oss2/processed/pypi/librariesio_licenses.RDS'
-pypi	17		07-02-osi_approved.R		"There is a master list of OSI approved licenses that is used in this step.
+pypi	17		07-02-osi_approved.R			"There is a master list of OSI approved licenses that is used in this step.
 It helps keep track of all the OSI licenses and the ways they can be typed in a license field.
 
 If there is a license missing from the libraries.io service, we fill in the missing license from the ""license"" pkginfo metadata.
@@ -66,7 +66,7 @@ We didn't use the license from pkginfo directly, becuase all the information is 
 
 Once we have all the license infomation, we mark each package as having an OSI-approved license or not"	"""./data/oss2/original/osi_licenses_all_projects.csv"",
 './data/oss2/processed/pypi/librariesio_licenses.RDS'"	./data/oss2/processed/pypi/osi_approved.RDS'
-pypi	18		08-combine_before_gh.R		"Combine the information about ""production ready"" status with ""osi approved license"" to get a final set of packages that we will use to pull from github.
+pypi	18		08-combine_before_gh.R			"Combine the information about ""production ready"" status with ""osi approved license"" to get a final set of packages that we will use to pull from github.
 Once we have the production-ready-osi-approved packages, we then use `home_page` column to potentially get a Github URL,
 if no github url was provided in the `home_page` column, we used the `download_url` column.
 This was similar to looking at the URL and Bug Report information in the CRAN analysis.
@@ -75,34 +75,89 @@ Some github URLs were just the username, so we created the github slug by append
 We end up with a dataset of github slugs (which we can use to clone information) that are production ready with OSI approved licenses"	"./data/oss2/processed/working/pypi/production_ready.csv',
 './data/oss2/processed/pypi/osi_approved.RDS'
 "	./data/oss2/processed/pypi/prod_osi_gh.RDS'
-pypi	19			01-04-clone_pypi.R	"Clones the github projects from the parsed github slug (user/repo).
+pypi	19			01-04-clone_pypi.R		"Clones the github projects from the parsed github slug (user/repo).
 Not all slugs were valid (i.e., not all github clone urls were valid).
 This is because some repositories do not exist anymore, they could've been renamed, and sometimes the user (i.e., owner) does not exist anymore."	./data/oss2/processed/pypi/prod_osi_gh.RDS'	
-cran	1	01-get_cran_packages.R			"Reads and saves the HTML from the CRAN website: 'https://cran.r-project.org/web/packages/available_packages_by_name.html'.
+cran	1	01-get_cran_packages.R				"Reads and saves the HTML from the CRAN website: 'https://cran.r-project.org/web/packages/available_packages_by_name.html'.
 This file automatically saves the date the script was run in the output file."		./data/oss2/original/cran/2019-02-16-cran-pkgs.html'
-cran	2		01-get_pkg_names.R		"Gets the URLs for each CRAN package page.
+cran	2		01-get_pkg_names.R			"Gets the URLs for each CRAN package page.
 Sets up the dataset for package name, package page URL, and package page download location."	./data/oss2/original/cran/2019-02-16-cran-pkgs.html'	./data/oss2/processed/pkg_links.csv'
-cran	3	02-download_cran_pkg_pages.R			Downloads the package page HTML as specified by the url and save output in the input file.	./data/oss2/processed/pkg_links.csv'	
-cran	4		02-get_cran_check_links.R		Similar to the 01-get_pkg_name.R script, but this gets the URL for the CRAN checks page for all the packages.	./data/oss2/processed/pkg_links.csv'	./data/oss2/processed/cran/cran_pkg_chk.RDS'
-cran	5	03-get_cran_chk_pages.R			Downloads the package page HTML as specified by the url and save output in the input file.	./data/oss2/processed/cran/cran_pkg_chk.RDS'	
-cran	6		03-parse_cran_check_results.R		"Used the same heuristics used in the summer to determine “production ready”.
+cran	3	02-download_cran_pkg_pages.R				Downloads the package page HTML as specified by the url and save output in the input file.	./data/oss2/processed/pkg_links.csv'	
+cran	4		02-get_cran_check_links.R			Similar to the 01-get_pkg_name.R script, but this gets the URL for the CRAN checks page for all the packages.	./data/oss2/processed/pkg_links.csv'	./data/oss2/processed/cran/cran_pkg_chk.RDS'
+cran	5	03-get_cran_chk_pages.R				Downloads the package page HTML as specified by the url and save output in the input file.	./data/oss2/processed/cran/cran_pkg_chk.RDS'	
+cran	6		03-parse_cran_check_results.R			"Used the same heuristics used in the summer to determine “production ready”.
 There are different systems each package is checked against.
 We use the ones that are “release” versions to check whether a package is “production ready”.
 From there we look at the build status of the package for the releases.
 A package is marked as “production ready” if all the values are either “OK”, “NOTE”, or “WARN”.
 That means a package is marked as “not production ready” if any of the values are “ERROR”, or “FAIL”."	./data/oss2/processed/cran/cran_pkg_chk.RDS'	'./data/oss2/processed/cran/cran_prod_rdy.csv'
-cran	7		04-prase_cran_licenses.R		Extracts the text from the “License: ” portion of the CRAN package page	./data/oss2/processed/pkg_links.csv'	./data/oss2/processed/cran/cran_meta_licenses_raw.RDS'
-cran	8		04-filter_osi_licenses.R		"Uses the master osi license file to tag osi approved licenses.
+cran	7		04-prase_cran_licenses.R			Extracts the text from the “License: ” portion of the CRAN package page	./data/oss2/processed/pkg_links.csv'	./data/oss2/processed/cran/cran_meta_licenses_raw.RDS'
+cran	8		04-filter_osi_licenses.R			"Uses the master osi license file to tag osi approved licenses.
 There is a visual check here, but it seems that those packages that are not OSI approved are CC and ACM “licenses”."	"./data/oss2/processed/cran/cran_meta_licenses_raw.RDS',
 './data/oss2/original/osi_licenses_all_projects.csv'"	./data/oss2/processed/cran/cran_osi_licenses.RDS'
-cran	9		05-prod_osi.R		Combines the production-ready data with the osi-approved data and then filter down packages that are both production-ready and osi-approved.	"./data/oss2/processed/cran/cran_prod_rdy.csv',
+cran	9		05-prod_osi.R			Combines the production-ready data with the osi-approved data and then filter down packages that are both production-ready and osi-approved.	"./data/oss2/processed/cran/cran_prod_rdy.csv',
 './data/oss2/processed/cran/cran_osi_licenses.RDS'"	./data/oss2/processed/cran/production_ready_osi_approved.RDS'
-cran	10		06-parse_github_url.R		"Uses the link(s) provided by the “URL” value on the CRAN package page to potentially parse a github URL.
+cran	10		06-parse_github_url.R			"Uses the link(s) provided by the “URL” value on the CRAN package page to potentially parse a github URL.
 If multiple github-like URLs are provided, we use the first one listed.
 If no github URLs are found in the “URL” section, we use look at the “Bugreport” value on the CRAN package page.
 If there is a github URL there we use that as the github URL to get a github user/repo slug.
 We use thig slug to create a clone URL to clone (i.e., download) the cran package from github."	./data/oss2/processed/cran/production_ready_osi_approved.RDS'	./data/oss2/processed/cran/production_osi_gh.RDS'
-cran	11	01-get_cran_pkg_src.R			Extracts the text from the “package source” portion of the CRAN package page to create a download URL for the current package source compressed file.	./data/oss2/processed/pkg_links.csv'	./data/oss2/processed/cran/cran_src_pkg_dl_links.csv'
-cran	12	02-download_cran_pkg_src.R			Downloads the files from the data specified in the input data.	./data/oss2/processed/cran/cran_src_pkg_dl_links.csv'	
-cran	13			01-03-clone_cran.R	"Clones the github projects from the parsed github slug (user/repo). Not all slugs were valid (i.e., not all github clone urls were valid).
+cran	11	01-get_cran_pkg_src.R				Extracts the text from the “package source” portion of the CRAN package page to create a download URL for the current package source compressed file.	./data/oss2/processed/pkg_links.csv'	./data/oss2/processed/cran/cran_src_pkg_dl_links.csv'
+cran	12	02-download_cran_pkg_src.R				Downloads the files from the data specified in the input data.	./data/oss2/processed/cran/cran_src_pkg_dl_links.csv'	
+cran	13			01-03-clone_cran.R		"Clones the github projects from the parsed github slug (user/repo). Not all slugs were valid (i.e., not all github clone urls were valid).
 This is because some repositories do not exist anymore, they could've been renamed, and sometimes the user (i.e., owner) does not exist anymore."	./data/oss2/processed/cran/production_osi_gh.RDS'	
+julia	1	JuliaEcosystem/src/JuliaEcosystem.jl				"From Bayoan, creates a dataset for each julia package, the version of the package, and its (Github) repository URL along with all of that package’s dependencies.
+You need to run this script from the base JuliaEscosystem directory, not the R project directory."	"Manifest.toml,
+Project.toml"	./analysis/01-scrape_package_data/julia/JuliaEcosystem/data/julia.tsv
+julia	2		01-julia_ecosystem.R			Counts the number of unique julia packages	'./analysis/01-scrape_package_data/julia/JuliaEcosystem/data/julia.tsv'	
+julia	3			01-clone_gh_repos.R		"This script downloads the Julia and CDN git repositories.
+In an ideal world, this script would’ve downloaded all the github repositories for all the languages in the project,
+But towards the end of the project, it was easier to have separate clone scripts for CRAN and PyPI.
+There are functions in this script that could be expanded to work with the cran and pypi repositories that would then be moved into the R folder.
+
+Having said that, the relevant part of this script creates the github slug from the julia repositories and then clones the repositories into a specified directory"	'./analysis/01-scrape_package_data/julia/JuliaEcosystem/data/julia.tsv'	'./data/oss2/original/cloned_repos/julia/'
+julia	4				01-travis_build_status.R	"Used the github slug to query the Travis API to get the build status of the master branch from Travis.
+This was used to determine whether or not a package was “production ready”"	'./analysis/01-scrape_package_data/julia/JuliaEcosystem/data/julia.tsv'	'./data/oss2/processed/julia/pkg_travis_badge.RDS'
+	5				02-travis_badge.R	"Takes the travis master branch API response and determines whether the package build status is “pass” or “fail”.
+This script just counts the number of “pass” repositories."	'./data/oss2/processed/julia/pkg_travis_badge.RDS'	
+julia	6	01-get_licensee.R				Runs the licensee command (from npm) to get the license for each of the Julia package LICENSE files.	'./data/oss2/processed/julia/pkg_travis_badge.RDS'	'./data/oss2/processed/julia/pkg_licensee_detect.RDS'
+julia	7		02-parse_licensee.R			"Parses the text from Licensee to get OSI approved licenses.
+We stopped the analysis for Julia here because the vast majority of liceses were not able to be detected by Licensee (thus, also on Github).
+We get a “License: NOASSERTION” response from licensee.
+Most of the licenses are OSI approved, but because the text of the license file was altered, licensee was unable to assign the correct license to the repository.
+We end up with only 418 OSI approved licenses, which is incorrect.
+
+We used licensee here because it is the same program/software Github uses to determine what license a repository is using.
+Spot checking the NOASSERTION results on Github also show no license tagged in the repository.
+Because trying to write a heuristic to “fix” licensee would mean “doing better than Github” we opted not to include Julia for the LOC analysis so far.
+
+One way might be to do a simple string match on the license file (e.g., does the string MIT exist in this file? Or does MIT exist as a word in this file).
+
+This script is not very “clean” it has a lot of exploratory work in it. Since we were still trying to figure out how to continue with the Julia ecosystem."	'./data/oss2/processed/julia/pkg_licensee_detect.RDS'	
+cdn	1	01-get_pkg_json_info.R				"Gets all the libraries listed from cdn.js using the API.
+Saves the GET response as a json file"		'./data/oss2/original/cdn/libraries_json/'
+cdn	2		01-cdn_pkg_info.R			"Converts the JSON response into a dataframe.
+Takes the first listed license for each package, and looks into the (older) license file to see if a package has an OSI approved license.
+
+The license file used to determine whether a package is an OSI approved package uses an older license file used from Summer 2018.
+If you are re-doing this analysis, you should use the one stated in the script as a comment.
+The license file generated from './analysis/osi_licenses/create_master_osi_approved.R'.
+This is the same license file used for the CRAN and PyPI analysis.
+Any “missing” licenses should be programmatically added using that script."	"'./data/oss2/original/cdn/libraries_json/',
+'./data/oss/final/PyPI/osi_approved_licenses.csv'"	'./data/oss2/processed/cdn/cdn_with_license.csv'
+cdn	3		02-filter_osi.R			"Uses the older license dataset to filter packages that were OSI approved.
+Please see note(s) above about the “older” license file.
+
+This script filters cdn libraries where osi_approved is TRUE."	"'./data/oss2/processed/cdn/cdn_with_license.csv',
+'./data/oss/final/PyPI/osi_approved_licenses.csv'"	'./data/oss2/processed/cdn/cdn_osi.csv'
+cdn	4		03-github_slugs.R			Uses the repository.url value to parse the github slug	'./data/oss2/processed/cdn/cdn_osi.csv'	'./data/oss2/processed/cdn/cdn_gh_slugs.csv'
+cdn	5			01-clone_gh_repos.R		"This script is the same script used in the Julia analysis to download the github repositories.
+See the notes in the Julia script for more information.
+
+Essentially this script clones the cdn repositories that have a github url into a specified directory"	'./data/oss2/processed/cdn/cdn_gh_slugs.csv'	'./data/oss2/original/cloned_repos/cdn/'
+cdn	6				travis.R	"The students over the Summer 2018 skipped all checks for “production ready” and assumed that all packages were already production ready.
+There is no standarized way to look for production ready packages in CDN when this analysis was done.
+One thought was to look at the Travis status for the github packages (like what we did for Julia).
+This script aimes to get information using travis.
+But we abandoned this because so many of the packages were lost because they did not use Travis for CI.
+This is why cdn was also dropped from the LOC analysis."	'./data/oss2/original/cloned_repos/cdn'	
