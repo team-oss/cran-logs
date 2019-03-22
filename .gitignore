@@ -1,6 +1,7 @@
 *~
 nohup.out
 README.html
+docs/README/README.md
 output/*
 *.html
 *.csv
