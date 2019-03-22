@@ -41,6 +41,12 @@ In general, the scripts under `Getting Data` are making API calls, and running t
 
 Data for the table and figures come from `./docs/package_counts/package_counts.Rmd`. **DO NOT** edit the `.dot` file in `./docs/package_counts/package_count.dot`, it is generated from the `.Rmd` document.
 
+If these numbers are not updating after making changes to `package_counts.Rmd`, try running:
+
+``` bash
+make package_counts
+```
+
 <table class="table table-striped table-hover table-condensed table-responsive" style="margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -1586,6 +1592,137 @@ The students over the Summer 2018 skipped all checks for “production ready” 
 </tr>
 </tbody>
 </table>
+<table class="table table-striped table-hover table-condensed table-responsive" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+run\_order
+</th>
+<th style="text-align:left;">
+Getting Data
+</th>
+<th style="text-align:left;">
+Processing Data
+</th>
+<th style="text-align:left;">
+Github
+</th>
+<th style="text-align:left;">
+input
+</th>
+<th style="text-align:left;">
+output
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+01-get\_pkg\_json\_info.R
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+'./data/oss2/original/cdn/libraries\_json/'
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+01-cdn\_pkg\_info.R
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+'./data/oss2/original/cdn/libraries\_json/', './data/oss/final/PyPI/osi\_approved\_licenses.csv'
+</td>
+<td style="text-align:left;">
+'./data/oss2/processed/cdn/cdn\_with\_license.csv'
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+02-filter\_osi.R
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+'./data/oss2/processed/cdn/cdn\_with\_license.csv', './data/oss/final/PyPI/osi\_approved\_licenses.csv'
+</td>
+<td style="text-align:left;">
+'./data/oss2/processed/cdn/cdn\_osi.csv'
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+03-github\_slugs.R
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+'./data/oss2/processed/cdn/cdn\_osi.csv'
+</td>
+<td style="text-align:left;">
+'./data/oss2/processed/cdn/cdn\_gh\_slugs.csv'
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+01-clone\_gh\_repos.R
+</td>
+<td style="text-align:left;">
+'./data/oss2/processed/cdn/cdn\_gh\_slugs.csv'
+</td>
+<td style="text-align:left;">
+'./data/oss2/original/cloned\_repos/cdn/'
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+'./data/oss2/original/cloned\_repos/cdn'
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+</tbody>
+</table>
 ### Julia
 
 <table class="table table-striped table-hover table-condensed table-responsive" style="margin-left: auto; margin-right: auto;">
@@ -1720,6 +1857,137 @@ We used licensee here because it is the same program/software Github uses to det
 One way might be to do a simple string match on the license file (e.g., does the string MIT exist in this file? Or does MIT exist as a word in this file).
 
 This script is not very “clean” it has a lot of exploratory work in it. Since we were still trying to figure out how to continue with the Julia ecosystem.
+</td>
+</tr>
+</tbody>
+</table>
+<table class="table table-striped table-hover table-condensed table-responsive" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:right;">
+run\_order
+</th>
+<th style="text-align:left;">
+Getting Data
+</th>
+<th style="text-align:left;">
+Processing Data
+</th>
+<th style="text-align:left;">
+Github
+</th>
+<th style="text-align:left;">
+input
+</th>
+<th style="text-align:left;">
+output
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:left;">
+JuliaEcosystem/src/JuliaEcosystem.jl
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+Manifest.toml, Project.toml
+</td>
+<td style="text-align:left;">
+./analysis/01-scrape\_package\_data/julia/JuliaEcosystem/data/julia.tsv
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+01-julia\_ecosystem.R
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+'./analysis/01-scrape\_package\_data/julia/JuliaEcosystem/data/julia.tsv'
+</td>
+<td style="text-align:left;">
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+01-clone\_gh\_repos.R
+</td>
+<td style="text-align:left;">
+'./analysis/01-scrape\_package\_data/julia/JuliaEcosystem/data/julia.tsv'
+</td>
+<td style="text-align:left;">
+'./data/oss2/original/cloned\_repos/julia/'
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+'./analysis/01-scrape\_package\_data/julia/JuliaEcosystem/data/julia.tsv'
+</td>
+<td style="text-align:left;">
+'./data/oss2/processed/julia/pkg\_travis\_badge.RDS'
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:left;">
+01-get\_licensee.R
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+'./data/oss2/processed/julia/pkg\_travis\_badge.RDS'
+</td>
+<td style="text-align:left;">
+'./data/oss2/processed/julia/pkg\_licensee\_detect.RDS'
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+02-parse\_licensee.R
+</td>
+<td style="text-align:left;">
+</td>
+<td style="text-align:left;">
+'./data/oss2/processed/julia/pkg\_licensee\_detect.RDS'
+</td>
+<td style="text-align:left;">
 </td>
 </tr>
 </tbody>

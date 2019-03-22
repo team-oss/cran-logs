@@ -156,6 +156,15 @@ cdn %>%
                             full_width = TRUE)
 ```
 
+```{r}
+cdn %>%
+  dplyr::select(run_order, "Getting Data":"Github", input:output) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                            full_width = TRUE)
+```
+
+
 
 ### Julia
 
@@ -171,3 +180,12 @@ julia %>%
   kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
                             full_width = TRUE)
 ```
+
+```{r}
+julia %>%
+  dplyr::select(run_order, "Getting Data":"Github", input:output) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                            full_width = TRUE)
+```
+
