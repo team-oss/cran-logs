@@ -15,7 +15,7 @@ library(dplyr)
 library(rvest)
 library(tibble)
 
-knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(message = FALSE, cache = TRUE)
 ```
 
 
@@ -230,8 +230,13 @@ all_cts <- tibble::tribble(
   "Net LOC Analysis",       NA,                  NA,                  NA,      NA,
   "Gross LOC git analysis", NA,                  NA,                  NA,      NA
 ) %>%
-  dplyr::mutate(cran_pypi = purrr::map2_int(CRAN, PyPI, .f = sum, na.rm = TRUE))
-knitr::kable(all_cts)
+  dplyr::mutate(`cran+pypi` = purrr::map2_int(CRAN, PyPI, .f = sum, na.rm = TRUE))
+
+readr::write_csv(all_cts, here::here('./docs/package_counts.csv'))
+
+knitr::kable(all_cts) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                            full_width = TRUE)
 ```
 
 # Consort Diagram
@@ -242,7 +247,7 @@ library(glue)
 ```
 
 ```{r, echo=FALSE}
-dot_f <- glue('
+dot_f <- glue::glue('
 digraph g {
   cran000 [shape = box, label = "CRAN\nN=<<TOTAL_CRAN>>"];
   cran010 [shape = box, label = "Production ready\nN=<<PRODUCTION_CRAN>>"];
@@ -273,6 +278,9 @@ digraph g {
 ```
 
 ```{r, echo=FALSE}
-DiagrammeR::grViz(diagram = dot_f)
+diagram <- DiagrammeR::grViz(diagram = dot_f)
+fp <- here::here('./output/package_counts/package_counts_diagram.html')
+htmlwidgets::saveWidget(diagram, file = fp)
 ```
 
+<iframe src='./output/package_counts/package_counts_diagram.html'>
