@@ -55,6 +55,31 @@ and running them may take a long time (or may not work depending on API changes)
 Code that parses downloaded data are in the `Processing Data` section.
 Github `clones` are under the `Github` section.
 
+### Package Counts
+
+Data for the table and figures come from `./docs/package_counts/package_counts.Rmd`.
+**DO NOT** edit the `.dot` file in `./docs/package_counts/package_count.dot`, it is generated from the `.Rmd` document.
+
+If these numbers are not updating after making changes to `package_counts.Rmd`, try running:
+
+```bash
+make package_counts
+```
+
+```{r, echo=FALSE, message=FALSE}
+all_cts <- readr::read_csv(here::here('./docs/package_counts/package_counts.csv'))
+
+knitr::kable(all_cts) %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                            full_width = TRUE)
+```
+
+```{r, echo=FALSE}
+library(DiagrammeR)
+
+DiagrammeR::grViz(diagram = here::here('./docs/package_counts/package_count.dot'))
+```
+
 ### R (CRAN)
 
 ```{r}
@@ -118,4 +143,31 @@ pypi %>%
 
 ### JavaScript (CDN)
 
+```{r}
+cdn <- tbl_doc %>%
+  dplyr::filter(analysis == 'cdn')
+```
+
+```{r}
+cdn %>%
+  dplyr::select(run_order, "Getting Data":Notes) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                            full_width = TRUE)
+```
+
+
 ### Julia
+
+```{r}
+julia <- tbl_doc %>%
+  dplyr::filter(analysis == 'julia')
+```
+
+```{r}
+julia %>%
+  dplyr::select(run_order, "Getting Data":Notes) %>%
+  knitr::kable() %>%
+  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                            full_width = TRUE)
+```

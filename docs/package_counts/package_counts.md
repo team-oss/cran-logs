@@ -8,7 +8,8 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r, warning=FALSE, results=FALSE, message=FALSE}
+
+```r
 library(here)
 library(readr)
 library(dplyr)
@@ -25,50 +26,81 @@ knitr::opts_chunk$set(message = FALSE, cache = TRUE)
 
 Total number of cran packages
 
-```{r}
+
+```r
 cran_pkgs <- readr::read_csv(here::here('./data/oss2/processed/pkg_links.csv'))
 ```
 
 Total number of cran packages
 
-```{r}
+
+```r
 TOTAL_CRAN <- nrow(cran_pkgs)
 stopifnot(TOTAL_CRAN == length(unique(cran_pkgs$pkg_name)))
 TOTAL_CRAN
+```
+
+```
+## [1] 13719
 ```
 
 ### Production
 
 Total number of production ready packages
 
-```{r}
+
+```r
 cran_production_status <- readr::read_csv(here::here('./data/oss2/processed/cran/cran_prod_rdy.csv'))
 
 table(cran_production_status$production_ready, useNA = 'always')
 ```
 
-```{r}
+```
+## 
+## FALSE  TRUE  <NA> 
+##   369 13350     0
+```
+
+
+```r
 PRODUCTION_CRAN <- cran_production_status %>% dplyr::filter(production_ready == TRUE) %>% nrow()
 PRODUCTION_CRAN
+```
+
+```
+## [1] 13350
 ```
 
 ### OSI
 
 Total number of OSI packages
 
-```{r}
+
+```r
 cran_osi_status <- readr::read_rds(here::here('./data/oss2/processed/cran/cran_osi_licenses.RDS'))
 table(cran_osi_status$osi_approved, useNA = 'always')
 ```
 
-```{r}
+```
+## 
+## FALSE  TRUE  <NA> 
+##   215 13504     0
+```
+
+
+```r
 OSI_CRAN <- cran_osi_status %>% dplyr::filter(osi_approved == TRUE) %>% nrow()
 OSI_CRAN
 ```
 
+```
+## [1] 13504
+```
+
 Production ready packages with OSI approved licenses
 
-```{r}
+
+```r
 prod <- readr::read_csv(here::here('./data/oss2/processed/cran/cran_prod_rdy.csv'))
 osi <- readr::read_rds(here::here('./data/oss2/processed/cran/cran_osi_licenses.RDS'))
 stopifnot(nrow(osi) == nrow(prod))
@@ -76,13 +108,24 @@ prod_osi <- dplyr::full_join(prod, osi, by = c('pkg_name', 'pkg_description', 'p
 stopifnot(nrow(prod_osi) == nrow(prod))
 ```
 
-```{r}
+
+```r
 addmargins(table(prod_osi$production_ready, prod_osi$osi_approved, useNA = 'always'))
+```
+
+```
+##        
+##         FALSE  TRUE  <NA>   Sum
+##   FALSE     8   361     0   369
+##   TRUE    207 13143     0 13350
+##   <NA>      0     0     0     0
+##   Sum     215 13504     0 13719
 ```
 
 ### Prod + OSI
 
-```{r}
+
+```r
 cran_production_osi_status <- readr::read_rds(here::here(
   './data/oss2/processed/cran/production_ready_osi_approved.RDS'))
 
@@ -90,20 +133,33 @@ PRODUCTION_OSI_CRAN <- nrow(cran_production_osi_status)
 PRODUCTION_OSI_CRAN
 ```
 
+```
+## [1] 13143
+```
+
 ### Prod + OSI + GH
 
 Production ready, OSI approved packages with a github slug
 
-```{r}
+
+```r
 github_cran <- readr::read_rds(here::here('./data/oss2/processed/cran/production_osi_gh.RDS'))
 ```
 
-```{r}
+
+```r
 table(!is.na(github_cran$gh_slug), useNA = 'always') %>% addmargins()
 ```
 
+```
+## 
+## FALSE  TRUE  <NA>   Sum 
+##     9  4407     0  4416
+```
 
-```{r}
+
+
+```r
 PROD_OSI_GH_CRAN <- github_cran %>% dplyr::filter(!is.na(gh_slug)) %>% nrow()
 ```
 
@@ -111,7 +167,8 @@ PROD_OSI_GH_CRAN <- github_cran %>% dplyr::filter(!is.na(gh_slug)) %>% nrow()
 
 Production ready, OSI approved packages with a github slug that were cloned
 
-```{r}
+
+```r
 cloned <- list.dirs(here::here('./data/oss2/original/cloned_repos/cran'),
                     full.names = TRUE, recursive = FALSE)
 
@@ -119,12 +176,17 @@ CLONED_CRAN <- length(cloned)
 CLONED_CRAN
 ```
 
+```
+## [1] 4386
+```
+
 
 # Python
 
 ### Total
 
-```{r}
+
+```r
 pypi_pkgs <- xml2::read_html(here::here(
   './data/oss2/original/pypi/pypi_simple/2019-01-23-pypi_simple.html'))
 
@@ -133,37 +195,62 @@ pkg_urls <- pypi_pkgs %>%
   rvest::html_attr('href')
 ```
 
-```{r}
+
+```r
 TOTAL_PYPI <- length(pkg_urls)
 TOTAL_PYPI
+```
+
+```
+## [1] 165738
 ```
 
 ### Production
 
 
-```{r, warning=FALSE}
+
+```r
 prod_mature_packages <- readr::read_csv(here::here(
   './data/oss2/processed/working/pypi/production_ready.csv'))
 
 prod_mature_packages$dev_status_clean %>% table(useNA = 'always') %>% addmargins()
 ```
 
-```{r}
+```
+## .
+##            mature production/stable              <NA>               Sum 
+##               326             17156                 0             17482
+```
+
+
+```r
 PRODUCTION_PYPI <- prod_mature_packages %>%
   dplyr::filter(dev_status_clean %in% c('production/stable', 'mature')) %>%
   nrow()
 PRODUCTION_PYPI
 ```
 
+```
+## [1] 17482
+```
+
 ### OSI
 
-```{r}
+
+```r
 osi_pypi <- readr::read_rds(here::here('./data/oss2/processed/pypi/osi_approved.RDS'))
 
 table(osi_pypi$osi_approved, useNA = 'always') %>% addmargins()
 ```
 
-```{r}
+```
+## 
+## FALSE  TRUE  <NA>   Sum 
+##  8342 30909     0 39251
+```
+
+
+```r
 OSI_PYPI <- osi_pypi %>%
   dplyr::filter(osi_approved == TRUE) %>%
   nrow()
@@ -173,7 +260,8 @@ OSI_PYPI <- osi_pypi %>%
 
 Production ready and OSI
 
-```{r, warning=FALSE}
+
+```r
 prod_rdy <- readr::read_csv(here::here('./data/oss2/processed/working/pypi/production_ready.csv'))
 prod_rdy <- dplyr::mutate(prod_rdy, prod_rdy = dev_status_clean == 'production/stable' | dev_status_clean == 'mature')
 
@@ -182,12 +270,22 @@ prod_osi_status <- dplyr::full_join(prod_rdy, osi_appr, by = c('name'))
 ```
 
 `prod_osi_status$prod_rdy` as rows; `prod_osi_status$osi_approved` are columns
-```{r}
+
+```r
 table(prod_osi_status$prod_rdy, prod_osi_status$osi_approved, useNA = 'always') %>% addmargins()
 ```
 
+```
+##       
+##        FALSE  TRUE  <NA>   Sum
+##   TRUE  2439 15043     0 17482
+##   <NA>  5903 15866     0 21769
+##   Sum   8342 30909     0 39251
+```
 
-```{r}
+
+
+```r
 PRODUCTION_OSI_PYPI <- dplyr::filter(prod_osi_status,
                           prod_rdy == TRUE,
                           osi_approved == TRUE) %>%
@@ -195,14 +293,20 @@ PRODUCTION_OSI_PYPI <- dplyr::filter(prod_osi_status,
 PRODUCTION_OSI_PYPI
 ```
 
+```
+## [1] 15043
+```
+
 ### Prod + OSI + GH
 
 
-```{r}
+
+```r
 prod_osi_gh_pypi <- readr::read_rds(here::here('./data/oss2/processed/pypi/prod_osi_gh.RDS'))
 ```
 
-```{r}
+
+```r
 PROD_OSI_GH_PYPI <- nrow(prod_osi_gh_pypi)
 ```
 
@@ -210,15 +314,21 @@ PROD_OSI_GH_PYPI <- nrow(prod_osi_gh_pypi)
 
 Production ready with OSI approved licenses that were downloaded for analysis in github.
 
-```{r}
+
+```r
 CLONED_PYPI <- dir.exists(here::here(prod_osi_gh_pypi$gh_clone_path)) %>% sum(na.rm = TRUE)
 CLONED_PYPI
+```
+
+```
+## [1] 10609
 ```
 
 
 # Complete Table Count
 
-```{r}
+
+```r
 all_cts <- tibble::tribble(
   ~Variable,                ~CRAN,               ~PyPI,               ~Julia,  ~CDN,
   "Total",                  TOTAL_CRAN,          TOTAL_PYPI,          NA,      NA,
@@ -239,54 +349,40 @@ knitr::kable(all_cts) %>%
                             full_width = TRUE)
 ```
 
-```{r}
+```
+## Warning in kableExtra::kable_styling(., bootstrap_options = c("striped", :
+## Please specify format in kable. kableExtra can customize either HTML or
+## LaTeX outputs. See https://haozhu233.github.io/kableExtra/ for details.
+```
+
+
+
+Variable                   CRAN     PyPI  Julia   CDN    cran+pypi
+-----------------------  ------  -------  ------  ----  ----------
+Total                     13719   165738  NA      NA        179457
+Production Ready          13350    17482  NA      NA         30832
+OSI Approved License      13504    30909  NA      NA         44413
+Prod + OSI                13143    15043  NA      NA         28186
+Prod + OSI + Github        4407    11016  NA      NA         15423
+Cloned                     4386    10609  NA      NA         14995
+Net LOC Analysis             NA       NA  NA      NA             0
+Gross LOC git analysis       NA       NA  NA      NA             0
+
+
+```r
 readr::write_csv(all_cts, here::here('./docs/package_counts/package_counts.csv'))
 ```
 
 
 # Consort Diagram
 
-```{r}
+
+```r
 library(DiagrammeR)
 library(glue)
 ```
 
-```{r, echo=FALSE}
-dot_f <- glue::glue('
-digraph g {
-  cran000 [shape = box, label = "CRAN\nN=<<TOTAL_CRAN>>"];
-  cran010 [shape = box, label = "Production ready\nN=<<PRODUCTION_CRAN>>"];
-  cran020 [shape = box, label = "OSI\nN=<<OSI_CRAN>>"];
-  cran025 [shape = box, label = "Production + OSI\nN=<<PRODUCTION_OSI_CRAN>>"];
-  cran030 [shape = box, label = "Production + OSI + Github\nN=<<PROD_OSI_GH_CRAN>>"];
-  cran035 [shape = box, label = "Production + OSI + Github + Clone\nN=<<CLONED_CRAN>>"];
 
-  py000 [shape = box, label = "PyPI\nN=<<TOTAL_PYPI>>"];
-  py010 [shape = box, label = "Production/Stable/Mature\nN=<<PRODUCTION_PYPI>>"];
-  py020 [shape = box, label = "OSI\nN=<<OSI_PYPI>>"];
-  py025 [shape = box, label = "Production + OSI\nN=<<PRODUCTION_OSI_PYPI>>"];
-  py030 [shape = box, label = "Production + OSI + Github\nN=<<PROD_OSI_GH_PYPI>>"];
-  py040 [shape = box, label = "Production + OSI + Github + Clone\nN=<<CLONED_PYPI>>"];
 
-  cran000 -> cran010;
-  cran000 -> cran020;
-  cran010 -> cran025;
-  cran025 -> cran030;
-  cran030 -> cran035;
-
-  py000 -> py010;
-  py000 -> py020
-  py010 -> py025;
-  py025 -> py030;
-  py030 -> py040;
-}', .open = "<<", .close = ">>")
-
-fileConn <- file(here::here('./docs/package_counts/package_count.dot'))
-writeLines(dot_f, fileConn)
-close(fileConn)
-```
-
-```{r, echo=FALSE}
-diagram <- DiagrammeR::grViz(diagram = dot_f)
-diagram
-```
+<!--html_preserve--><div id="htmlwidget-43071bccb900d5172445" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-43071bccb900d5172445">{"x":{"diagram":"digraph g {\n  cran000 [shape = box, label = \"CRAN\nN=13719\"];\n  cran010 [shape = box, label = \"Production ready\nN=13350\"];\n  cran020 [shape = box, label = \"OSI\nN=13504\"];\n  cran025 [shape = box, label = \"Production + OSI\nN=13143\"];\n  cran030 [shape = box, label = \"Production + OSI + Github\nN=4407\"];\n  cran035 [shape = box, label = \"Production + OSI + Github + Clone\nN=4386\"];\n\n  py000 [shape = box, label = \"PyPI\nN=165738\"];\n  py010 [shape = box, label = \"Production/Stable/Mature\nN=17482\"];\n  py020 [shape = box, label = \"OSI\nN=30909\"];\n  py025 [shape = box, label = \"Production + OSI\nN=15043\"];\n  py030 [shape = box, label = \"Production + OSI + Github\nN=11016\"];\n  py040 [shape = box, label = \"Production + OSI + Github + Clone\nN=10609\"];\n\n  cran000 -> cran010;\n  cran000 -> cran020;\n  cran010 -> cran025;\n  cran025 -> cran030;\n  cran030 -> cran035;\n\n  py000 -> py010;\n  py000 -> py020\n  py010 -> py025;\n  py025 -> py030;\n  py030 -> py040;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script><!--/html_preserve-->
