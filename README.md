@@ -213,7 +213,7 @@ Gross LOC git analysis
 </tr>
 </tbody>
 </table>
-![](/home/chend/git/oss2/README_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](./docs/README/consort-1.png)
 
 ### R (CRAN)
 

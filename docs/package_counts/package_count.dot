@@ -1,0 +1,39 @@
+digraph g {
+  cran000 [shape = box, label = "CRAN
+N=13719"];
+  cran010 [shape = box, label = "Production ready
+N=13350"];
+  cran020 [shape = box, label = "OSI
+N=13504"];
+  cran025 [shape = box, label = "Production + OSI
+N=13143"];
+  cran030 [shape = box, label = "Production + OSI + Github
+N=4407"];
+  cran035 [shape = box, label = "Production + OSI + Github + Clone
+N=4386"];
+
+  py000 [shape = box, label = "PyPI
+N=165738"];
+  py010 [shape = box, label = "Production/Stable/Mature
+N=17482"];
+  py020 [shape = box, label = "OSI
+N=30909"];
+  py025 [shape = box, label = "Production + OSI
+N=15043"];
+  py030 [shape = box, label = "Production + OSI + Github
+N=11016"];
+  py040 [shape = box, label = "Production + OSI + Github + Clone
+N=10609"];
+
+  cran000 -> cran010;
+  cran000 -> cran020;
+  cran010 -> cran025;
+  cran025 -> cran030;
+  cran030 -> cran035;
+
+  py000 -> py010;
+  py000 -> py020
+  py010 -> py025;
+  py025 -> py030;
+  py030 -> py040;
+}
