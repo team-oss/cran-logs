@@ -21,6 +21,22 @@ library(dplyr)
 library(knitr)
 library(kableExtra)
 
+show_notes <- function(df) {
+  df %>%
+    dplyr::select(run_order, "Getting Data":Notes) %>%
+    knitr::kable() %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                              full_width = TRUE)
+}
+
+show_io <- function(df) {
+  df %>%
+    dplyr::select(run_order, "Getting Data":"Github", input:output) %>%
+    knitr::kable() %>%
+    kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
+                              full_width = TRUE)
+}
+
 tbl_doc <- readr::read_tsv(here::here('./docs/oss2_table_documentation.tsv'))
 ```
 
@@ -95,19 +111,11 @@ Running order
 3. Github: `./analysis/03-github/`
 
 ```{r, results='asis'}
-cran %>%
-  dplyr::select(run_order, "Getting Data":Notes) %>%
-  knitr::kable() %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-                            full_width = TRUE)
+show_notes(cran)
 ```
 
 ```{r, results='asis'}
-cran %>%
-  dplyr::select(run_order, "Getting Data":"Github", input:output) %>%
-  knitr::kable() %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-                            full_width = TRUE)
+show_io(cran)
 ```
 
 
@@ -126,19 +134,11 @@ Running order
 3. Github: `./analysis/03-github/`
 
 ```{r, results='asis'}
-pypi %>%
-  dplyr::select(run_order, "Getting Data":Notes) %>%
-  knitr::kable() %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-                            full_width = TRUE)
+show_notes(pypi)
 ```
 
 ```{r, results='asis'}
-pypi %>%
-  dplyr::select(run_order, "Getting Data":"Github", input:output) %>%
-  knitr::kable() %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-                            full_width = TRUE)
+show_io(pypi)
 ```
 
 ### JavaScript (CDN)
@@ -149,19 +149,11 @@ cdn <- tbl_doc %>%
 ```
 
 ```{r}
-cdn %>%
-  dplyr::select(run_order, "Getting Data":Notes) %>%
-  knitr::kable() %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-                            full_width = TRUE)
+show_notes(cdn)
 ```
 
 ```{r}
-cdn %>%
-  dplyr::select(run_order, "Getting Data":"Github", input:output) %>%
-  knitr::kable() %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-                            full_width = TRUE)
+show_io(cdn)
 ```
 
 
@@ -174,18 +166,10 @@ julia <- tbl_doc %>%
 ```
 
 ```{r}
-julia %>%
-  dplyr::select(run_order, "Getting Data":Notes) %>%
-  knitr::kable() %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-                            full_width = TRUE)
+show_notes(julia)
 ```
 
 ```{r}
-julia %>%
-  dplyr::select(run_order, "Getting Data":"Github", input:output) %>%
-  knitr::kable() %>%
-  kableExtra::kable_styling(bootstrap_options = c("striped", "hover", "condensed", "responsive"),
-                            full_width = TRUE)
+show_io(julia)
 ```
 
